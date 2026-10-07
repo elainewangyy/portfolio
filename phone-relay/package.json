@@ -1,0 +1,15 @@
+{
+  "name": "elaine-phone-relay",
+  "private": true,
+  "type": "module",
+  "description": "Website 💌 window → my Telegram, running on my old phone in Termux",
+  "scripts": {
+    "start": "bash start.sh"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
+  }
+}

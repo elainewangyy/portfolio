@@ -3060,3 +3060,241 @@ body.motion-paused *::after {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* =============================================================
+   💌 MESSAGE WINDOW  (chat.js)
+   A round 💌 button sits just above Da Niu's lane, bottom-right.
+   It opens a small window for writing to me; my replies (from
+   Telegram, via my phone) show up in it. Only appears once my
+   phone's address is in chat-endpoint.json.
+   ============================================================= */
+.chat-launch {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--pet-size) + 12px);
+  z-index: 95;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-accent-text);
+  background: var(--color-accent);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 6px 18px var(--color-shadow);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.chat-launch:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-2px);
+}
+
+body.pet-hidden .chat-launch {
+  bottom: 16px;
+}
+
+/* A pink dot when I've replied and the window is closed */
+.chat-launch__dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-nose);
+  border: 2px solid var(--color-bg);
+}
+
+.chat-launch__dot[hidden] {
+  display: none;
+}
+
+.chat {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 96;
+  width: min(360px, calc(100vw - 32px));
+  max-height: min(560px, calc(100dvh - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 40px var(--color-shadow);
+}
+
+.chat[hidden] {
+  display: none;
+}
+
+.chat__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.chat__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.chat__close {
+  font: inherit;
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-muted);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.chat__close:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.chat__intro {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.chat__log {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.chat__log[hidden] {
+  display: none;
+}
+
+.chat__msg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 85%;
+}
+
+.chat__msg--visitor {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.chat__who {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  margin-bottom: 0.15rem;
+}
+
+.chat__bubble {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border-radius: 16px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
+.chat__msg--visitor .chat__bubble {
+  color: var(--color-accent-text);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.chat__status {
+  margin: 0;
+  min-height: 1.2em;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.chat__status:empty {
+  min-height: 0;
+}
+
+.chat__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chat__name,
+.chat__text {
+  font: inherit;
+  font-size: 1rem; /* 16px+ stops iPhones zooming in on tap */
+  width: 100%;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 0.5rem 0.7rem;
+}
+
+.chat__name:focus-visible,
+.chat__text:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.chat__row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.chat__text {
+  flex: 1;
+  resize: none;
+  min-height: 2.75rem;
+  max-height: 8rem;
+}
+
+.chat__send {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+  color: var(--color-accent-text);
+  background: var(--color-accent);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.chat__send:hover {
+  background: var(--color-accent-hover);
+}
+
+.chat__send:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Hidden box only spam bots fill in */
+.chat__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}

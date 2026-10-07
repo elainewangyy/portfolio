@@ -1,0 +1,7 @@
+# Phone relay: secrets and runtime files stay on the phone
+phone-relay/config.env
+phone-relay/data.json
+phone-relay/data.json.tmp
+phone-relay/tunnel.log
+phone-relay/relay.log
+phone-relay/node_modules/
