@@ -1,22 +1,509 @@
-<!-- Generating Warm-up Games (DSDN142 Project 2), made in Figma Make and built into static files for my portfolio (npx vite build --base ./). Source: PJ2/动态背景与网站构建.zip -->
-<!doctype html>
-<html lang="en">
-  <head>
-    
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Generating Warm-up Games</title>
-    
-    <meta name="description" content="Interactive platform guides users through attendance recording, file uploads, and personalized warm-up game prompts for solo or group activities.">
-    <meta name="robots" content="noindex, nofollow">
-    <meta property="og:title" content="Generating Warm-up Games">
-    <meta property="og:description" content="Interactive platform guides users through attendance recording, file uploads, and personalized warm-up game prompts for solo or group activities.">
-    <script type="module" crossorigin src="./assets/index-BiAzJaOY.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CzNfyNnc.css">
-  </head>
-  <body>
-    
-    <div id="root"></div>
-    
-  </body>
+<!DOCTYPE html>
+<!--
+  =============================================================
+  HOME PAGE  (index.html)
+  =============================================================
+  Parts of the feel are inspired by Milan Reed's Framer portfolio
+  (milanreed.framer.website) — big covers, draggable capsules,
+  black → light — but the opening screen is my own idea:
+    1. DESKTOP - the home page opens as a computer desktop (the
+                 world of my Desk Pet): menu bar + clock, my work
+                 as icons, a draggable hello.txt window, a sticky
+                 note, and Da Niu crawling along the bottom
+    2. WORK    - big full-width project covers        (required)
+    3. SKILLS  - capsules that drop in and can be dragged
+    4. ABOUT   - a paragraph about me + my photography (required)
+  Scrolling into SKILLS fades the page from black to light.
+  The mouse shows a little icon that belongs to what it's over.
+  A hamster from my Desk Pet project lives at the bottom (pet.js).
+  The moving parts live in home.js.
+
+  Earlier versions: archive/v2-before-milan-style/ and
+  archive/index-reveal-experiment.html.
+  =============================================================
+-->
+<html lang="en-NZ">
+<head>
+  <meta charset="UTF-8" />
+  <!-- This meta tag is what makes the site work on phones. Leave it in. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Elaine — Portfolio</title>
+  <meta name="description" content="Portfolio of Elaine, a design student at VUW — interactive things, photography, and a very round hamster." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+  <!-- Fonts: General Sans (free, Fontshare) + Caveat for handwritten notes (free, Google Fonts) -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- The "?v=…" after a file name is a version tag: when the file changes,
+       changing this tag makes every browser fetch the new copy instead of
+       an old saved one. -->
+  <link rel="stylesheet" href="styles.css?v=20261007r" />
+</head>
+<body class="home">
+
+  <!-- Skip link: lets keyboard users jump straight to the main content
+       instead of tabbing through the menu. It's hidden until focused. -->
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===================== HEADER / NAV =====================
+       On the home page this doubles as the desktop's menu bar
+       (see "HOME: THE DESKTOP" in styles.css), with a live clock. -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav__logo">Elaine</a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav__links">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+      </nav>
+      <!-- Narration: reads the page aloud (see script.js, section 6) -->
+      <button type="button" class="narrate-btn" aria-pressed="false" data-cursor="🔊 Read aloud">
+        <span aria-hidden="true">🔊</span> Narration
+      </button>
+      <!-- Narration speed (shown while Narration is on) -->
+      <label class="narrate-speed" hidden>
+        <span class="narrate-speed__label">Speed</span>
+        <select class="narrate-speed__select">
+          <option value="0.75">0.75×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+          <option value="3">3×</option>
+          <option value="4">4×</option>
+          <option value="6">6×</option>
+          <option value="8">8×</option>
+        </select>
+      </label>
+      <!-- Feed Da Niu: the mouse becomes corn and Da Niu chases it (script.js, section 7) -->
+      <button type="button" class="feed-btn" aria-pressed="false">
+        <span aria-hidden="true">🌽</span> Feed<span class="feed-btn__more"> Da Niu</span>
+      </button>
+      <!-- Language: English / 简体中文 / 繁體中文 for the whole site (i18n.js) -->
+      <label class="lang-pick">
+        <span class="sr-only">Language</span>
+        <span class="lang-pick__globe" aria-hidden="true">🌐</span>
+        <select class="lang-pick__select">
+          <option value="en" lang="en">EN</option>
+          <option value="hans" lang="zh-Hans">简体</option>
+          <option value="hant" lang="zh-Hant">繁體</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===================== HERO: MY DESKTOP =====================
+         The opening screen is a computer desktop — the same world as
+         Desk Pet (a pet that lives on your desktop) and my photo folders.
+         Two icons: My work and About me. The hello.txt window can be
+         dragged around by its title bar. Da Niu (pet.js) crawls along
+         the bottom. -->
+    <section class="desktop" aria-label="Welcome">
+
+      <!-- Desktop icons: one for my work, one for me -->
+      <ul class="desktop__icons">
+        <li>
+          <!-- My work: the project list. The icon is just Da Niu himself,
+               looking left and right (the 左右 GIF from Desk Pet), no tile. -->
+          <a class="desk-icon" href="#work" data-cursor="📂 Open">
+            <span class="desk-icon__tile desk-icon__tile--bare"><img src="assets/pet/idle.gif" alt="" /></span>
+            <span class="desk-icon__label">My work</span>
+          </a>
+        </li>
+        <li>
+          <!-- About me: my skills and my Camera roll folders live in here -->
+          <a class="desk-icon" href="#about" data-cursor="📂 Open">
+            <span class="desk-icon__tile desk-icon__tile--folder" aria-hidden="true"><span></span></span>
+            <span class="desk-icon__label">About me</span>
+          </a>
+        </li>
+        <li>
+          <!-- Accessibility: one click stops every animation and starts
+               reading the page aloud from the top (script.js, section 8).
+               Click again to turn it all back. -->
+          <button type="button" class="desk-icon easy-mode" aria-pressed="false" data-cursor="♿ Turn on">
+            <span class="desk-icon__tile desk-icon__tile--access" aria-hidden="true">♿</span>
+            <span class="desk-icon__label">Accessibility</span>
+          </button>
+        </li>
+      </ul>
+
+      <!-- The hello.txt window -->
+      <div class="window" role="group" aria-labelledby="window-title">
+        <div class="window__bar" data-cursor="✋ Drag">
+          <!-- Like a real window (home.js, section 1): red closes it and
+               goes to My work; yellow minimises it to a tab at the bottom
+               of the desktop; green maximises it and goes to About. -->
+          <button type="button" class="window__dot window__dot--close" data-act="close" aria-label="Close — go to My work" data-cursor="✕ My work"></button>
+          <button type="button" class="window__dot window__dot--min" data-act="min" aria-label="Minimise" data-cursor="− Minimise"></button>
+          <button type="button" class="window__dot window__dot--max" data-act="max" aria-label="Maximise — go to About me" data-cursor="⤢ About me"></button>
+          <span class="window__title" id="window-title">hello.txt</span>
+        </div>
+        <div class="window__body">
+          <h1 class="window__hello">Hi, I'm Elaine.</h1>
+
+          <!-- Da Niu's notes: home.js types these out one by one, Chinese
+               then English, like a typewriter. The lines are Da Niu's own,
+               from the Desk Pet app. Add, remove or change any <li>. -->
+          <div class="quote">
+            <p class="sr-only">Da Niu says: <span lang="zh-Hans">今天也要加油哦！</span> You've got this today!</p>
+            <div class="quote__typed" aria-hidden="true">
+              <p class="quote__zh" lang="zh-Hans">今天也要加油哦！</p>
+              <p class="quote__en">You've got this today!</p>
+            </div>
+            <p class="quote__by" aria-hidden="true">— Da Niu</p>
+            <ul class="quote__lines" hidden>
+              <li><span lang="zh-Hans">今天也要加油哦！</span><span>You've got this today!</span></li>
+              <li><span lang="zh-Hans">记得喝口水哦</span><span>Remember to drink some water.</span></li>
+              <li><span lang="zh-Hans">让眼睛休息一下吧</span><span>Give your eyes a little rest.</span></li>
+              <li><span lang="zh-Hans">我一直在这儿陪着你</span><span>I'm right here with you.</span></li>
+              <li><span lang="zh-Hans">嘿嘿，最喜欢你了</span><span>Hehe, you're my favourite.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- A sticky note on the desktop -->
+      <p class="sticky-note">psst… the hamster down there is real — try dragging it!</p>
+    </section>
+
+    <!-- ===================== WORK (required) ===================== -->
+    <section id="work" class="section container">
+      <h2 class="works__label">My work</h2>
+
+      <!-- A text list of projects. With a mouse, each project's cover
+           floats up and follows the pointer while you hover its row
+           (home.js, section 6). On touch screens the cover shows as a
+           small picture in the row instead.
+           To add a project: copy one <li class="work"> … </li>. -->
+      <ul class="work-list">
+
+        <!-- Project: Desk Pet (personal project) -->
+        <li class="work">
+          <a class="work__link" href="project-desk-pet.html">
+            <span class="work__dot" aria-hidden="true"></span>
+            <h3 class="work__title">Desk Pet <span lang="zh-Hans">桌宠</span></h3>
+            <span class="work__type">Personal project</span>
+            <span class="work__kind">Desktop app</span>
+            <span class="work__cover cover-deskpet">
+              <span class="cover-deskpet__title" aria-hidden="true">Desk<br />Pet<span lang="zh-Hans">桌宠</span></span>
+              <span class="cover-deskpet__tag" aria-hidden="true">a gift for a friend ♥</span>
+              <img class="cover-deskpet__pet" src="assets/pet/idle.gif"
+                   alt="Da Niu, a cut-out golden hamster, sitting up and looking left and right" />
+            </span>
+          </a>
+        </li>
+
+        <!-- Project: DSDN142 Project 2 -->
+        <li class="work">
+          <a class="work__link" href="project-warm-up-games.html">
+            <span class="work__dot" aria-hidden="true"></span>
+            <!-- &#8209; is a hyphen that never breaks the line ("Warm-" / "up") -->
+            <h3 class="work__title">Generating Warm&#8209;up Games</h3>
+            <span class="work__type">DSDN142 Project 2</span>
+            <span class="work__kind">Interactive web</span>
+            <span class="work__cover">
+              <img src="assets/pj2/lets-game.jpg"
+                   alt="Start screen reading “LET'S GAME” in rainbow letters on a pastel gradient" />
+            </span>
+          </a>
+        </li>
+
+      </ul>
+
+      <!-- The floating cover that follows the mouse (filled in by home.js) -->
+      <div class="work-preview" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===================== ABOUT (required, light) =====================
+         data-theme="light": scrolling here fades the page to light.
+         Three parts: a few words about me, my skills, my Camera roll. -->
+    <section id="about" class="section container" data-theme="light">
+      <h2 class="section__title">About</h2>
+      <div class="about about--with-photo">
+        <!-- A photo of me, as an instant-camera print beside my words
+             (photo data removed; web size). -->
+        <figure class="snap">
+          <img src="assets/about-me.jpg" width="900" height="1125"
+               alt="Me under a willow tree in a park, in a bandana and black pinafore, pulling a surprised face with one hand raised" />
+          <figcaption>that's me!</figcaption>
+        </figure>
+        <div class="about__text">
+          <p>
+            I'm interested in how people interact with digital products and how
+            design can make information easier to understand and access. I enjoy
+            exploring ideas, solving problems, and creating thoughtful user
+            experiences that are both functional and engaging.
+          </p>
+          <p>
+            Through my projects, I aim to combine creativity with user-centred
+            thinking, exploring how technology and design can make everyday
+            experiences better.
+          </p>
+        </div>
+      </div>
+
+      <!-- ===== ME, IN MOTION (part of About) =====
+           A wall of photos and videos of me, mixed with some of my photos
+           from the Camera roll, in columns that scroll by themselves like
+           slow conveyor belts (home.js, section 7). Style based on Skiper
+           UI "skiper30" (Oliver parallax), rebuilt in plain CSS/JS.
+           data-speed = pixels per second; data-dir = up or down.
+           It pauses while the mouse is over it. The videos have no sound
+           and only play while the wall is on screen; with "Pause
+           animations" or "reduce motion" the wall holds still and the
+           videos stop.
+           Photos of me have alt text. The rest repeat photos from the
+           Camera roll below, so here they're decoration (alt=""). -->
+      <div class="drift" role="region" aria-label="Me, in motion: photos and short videos of me among some of my photos">
+        <div class="drift__col" data-speed="26" data-dir="up">
+          <div class="drift__tile"><img src="assets/nails/nails-red-gold.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile drift__tile--wide">
+            <video src="assets/me-linabell.mp4" poster="assets/me-linabell-poster.jpg" muted loop playsinline preload="metadata"
+                   aria-label="Video, no sound: me laughing cheek to cheek with LinaBell"></video>
+          </div>
+          <div class="drift__tile"><img src="assets/photography/doll-orange-hair.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/about-me-linabell.jpg?v=2" loading="lazy"
+               alt="Me in a pink bucket hat and navy dress, posing beside LinaBell, a pink fox character with a big bow" /></div>
+          <div class="drift__tile"><img src="assets/photography/still-blue-tray.jpg" alt="" loading="lazy" /></div>
+        </div>
+        <div class="drift__col" data-speed="20" data-dir="down">
+          <div class="drift__tile"><img src="assets/photography/still-pancakes-card.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/photography/oshi-tray-wand.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile drift__tile--tall">
+            <video src="assets/me-sparkle.mp4" poster="assets/me-sparkle-poster.jpg" muted loop playsinline preload="metadata"
+                   aria-label="Video, no sound: a selfie of me with a sparkly face filter"></video>
+          </div>
+          <div class="drift__tile"><img src="assets/nails/nails-cat-eye-rainbow.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/photography/doll-hood-flowers.jpg" alt="" loading="lazy" /></div>
+        </div>
+        <div class="drift__col" data-speed="30" data-dir="up">
+          <div class="drift__tile"><img src="assets/photography/doll-blue-hoodie-closeup.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/photography/oshi-cafe-window.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/nails/nails-kuromi.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/photography/portrait-stairs.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/photography/oshi-pancake-badge.jpg" alt="" loading="lazy" /></div>
+        </div>
+        <div class="drift__col" data-speed="23" data-dir="down">
+          <div class="drift__tile"><img src="assets/photography/doll-cat-ears-outdoors.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/nails/nails-pink-flowers.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/photography/still-cards-flowers.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/nails/nails-silver-chains.jpg" alt="" loading="lazy" /></div>
+          <div class="drift__tile"><img src="assets/photography/doll-scarf.jpg" alt="" loading="lazy" /></div>
+        </div>
+      </div>
+      <p class="drift__credit">Parallax style based on <a href="https://skiper-ui.com" target="_blank" rel="noopener">Skiper UI</a> (skiper30)</p>
+
+      <!-- ===== SKILLS (part of About) =====
+           Capsules that drop in and can be dragged (home.js, section 4).
+           Edit the capsules freely — add, remove or reword them. -->
+      <div id="skills" class="skills">
+      <h3 class="about__subtitle">What I work with</h3>
+      <div class="skills__box" data-cursor="✋ Drag me">
+        <p class="note skills__note" aria-hidden="true">play around!</p>
+        <ul class="skills__list">
+          <li>🧭 User flows</li>
+          <li>👆 Interaction design</li>
+          <li>🎨 Figma</li>
+          <li>✨ Figma Make</li>
+          <li>💻 HTML · CSS · JS</li>
+          <li>🖥️ Electron apps</li>
+          <li>🤖 AI prompting</li>
+          <li>🛠️ Claude Code</li>
+          <li>🐹 Desktop pets</li>
+          <li>📷 Photography</li>
+          <li>🧸 Doll photography</li>
+          <li>♿ Accessibility</li>
+          <li>🎬 Video editing</li>
+          <li>💅 Nail art</li>
+          <li>💖 Oshikatsu <span lang="ja">推し活</span></li>
+        </ul>
+      </div>
+      </div>
+
+      <!-- ===== CAMERA ROLL (part of About) =====
+           My photos in four folders, the same way I sorted them on my
+           computer. Click a folder: it opens and the photos fly out of it.
+           Click a photo: it zooms up to full size (← → to flip through).
+           Without JavaScript all four folders' photos just show as lists.
+           To add a photo: copy an <li> inside the right folder's list. -->
+      <h3 class="about__subtitle" id="about-camera-roll">Camera roll</h3>
+      <p class="about__lead">My photos, sorted into four folders — open one up.</p>
+
+      <div class="folders" data-folders>
+        <div class="folders__row">
+          <button type="button" class="folder folder--blue" aria-expanded="false" aria-controls="folder-bjd" data-cursor="📂 Open">
+            <span class="folder__art" aria-hidden="true">
+              <span class="folder__back"></span>
+              <span class="folder__papers">
+                <img src="assets/photography/doll-orange-hair.jpg" alt="" loading="lazy" />
+                <img src="assets/photography/doll-blue-hoodie-closeup.jpg" alt="" loading="lazy" />
+                <img src="assets/photography/doll-cat-ears-outdoors.jpg" alt="" loading="lazy" />
+              </span>
+              <span class="folder__front"></span>
+            </span>
+            <span class="folder__name">BJD</span>
+            <span class="folder__count">ball-jointed dolls · 10 photos</span>
+          </button>
+
+          <button type="button" class="folder folder--orange" aria-expanded="false" aria-controls="folder-photography" data-cursor="📂 Open">
+            <span class="folder__art" aria-hidden="true">
+              <span class="folder__back"></span>
+              <span class="folder__papers">
+                <img src="assets/photography/portrait-stairs-wide.jpg" alt="" loading="lazy" />
+                <img src="assets/photography/portrait-stairs.jpg" alt="" loading="lazy" />
+                <img src="assets/photography/portrait-hall.jpg" alt="" loading="lazy" />
+              </span>
+              <span class="folder__front"></span>
+            </span>
+            <span class="folder__name">Photography</span>
+            <span class="folder__count">portraits · 5 photos</span>
+          </button>
+
+          <button type="button" class="folder folder--pink" aria-expanded="false" aria-controls="folder-oshi" data-cursor="📂 Open">
+            <span class="folder__art" aria-hidden="true">
+              <span class="folder__back"></span>
+              <span class="folder__papers">
+                <img src="assets/photography/still-cards-flowers.jpg" alt="" loading="lazy" />
+                <img src="assets/photography/still-pancakes-card.jpg" alt="" loading="lazy" />
+                <img src="assets/photography/still-badges-drink.jpg" alt="" loading="lazy" />
+              </span>
+              <span class="folder__front"></span>
+            </span>
+            <span class="folder__name" lang="ja">推し活</span>
+            <span class="folder__count">oshikatsu · 9 photos</span>
+          </button>
+
+          <button type="button" class="folder folder--purple" aria-expanded="false" aria-controls="folder-nails" data-cursor="📂 Open">
+            <span class="folder__art" aria-hidden="true">
+              <span class="folder__back"></span>
+              <span class="folder__papers">
+                <img src="assets/nails/nails-red-gold.jpg" alt="" loading="lazy" />
+                <img src="assets/nails/nails-kuromi.jpg" alt="" loading="lazy" />
+                <img src="assets/nails/nails-cat-eye-rainbow.jpg" alt="" loading="lazy" />
+              </span>
+              <span class="folder__front"></span>
+            </span>
+            <span class="folder__name" lang="zh-Hans">美甲</span>
+            <span class="folder__count">nail art · 12 photos</span>
+          </button>
+        </div>
+
+        <!-- Folder: BJD -->
+        <div class="folder-panel" id="folder-bjd" role="region" aria-label="BJD photos">
+          <div class="folder-panel__head">
+            <h4 class="folder-panel__title">BJD</h4>
+            <button type="button" class="pet-toggle folder-panel__close">Close folder ✕</button>
+          </div>
+          <ul class="folder-panel__grid">
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-blue-hoodie-closeup.jpg" alt="Close-up of a doll with orange hair and blue eyes in a blue knitted hoodie, among frosted white branches" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-hood-frost.jpg" alt="The orange-haired doll's face inside a blue hood, frosted white branches behind" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-hood-flowers.jpg" alt="The orange-haired doll in a blue hood, framed by blue roses and green leaves" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-christmas-hoodie.jpg" alt="The orange-haired doll in a blue hoodie with an embroidered Christmas tree, among blue roses" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-blue-hoodie.jpg" alt="The orange-haired doll in the Christmas-tree hoodie, sitting beside a white tree" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-scarf.jpg" alt="Doll with pale blond hair in a white jumper and black-and-white checked scarf, beside a winter wreath" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-silver-hair.jpg" alt="Doll with silver-blue hair in a pale blue jacket, standing in a wintry blue-and-white set" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-orange-hair.jpg" alt="Doll with orange hair in a black outfit and boots, standing in a pale room scattered with rainbow light" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-cat-ears-light.jpg" alt="Doll with black and green hair and cat ears in a white jumper, in the same rainbow-lit room" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/doll-cat-ears-outdoors.jpg" alt="The cat-eared doll outdoors in a white top, with sunlit green trees behind" loading="lazy" /></button></li>
+          </ul>
+        </div>
+
+        <!-- Folder: Photography -->
+        <div class="folder-panel" id="folder-photography" role="region" aria-label="Photography: portraits">
+          <div class="folder-panel__head">
+            <h4 class="folder-panel__title">Photography</h4>
+            <button type="button" class="pet-toggle folder-panel__close">Close folder ✕</button>
+          </div>
+          <ul class="folder-panel__grid">
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/portrait-stairs.jpg" alt="A person with short blond hair and glasses climbing a pale stairway, looking up at the camera, small below a large warm-lit wall" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/portrait-stairs-look.jpg" alt="The same person walking down the stairway in sunglasses, glancing towards the camera" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/portrait-stairs-2.jpg" alt="The same person in profile, walking down the stairs below a wide empty warm-toned wall" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/portrait-stairs-wide.jpg" alt="Wide view of the stairway, with the blond-haired person small in the middle of the frame" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/portrait-hall.jpg" alt="Two stacked frames of the same person in a grand hall under a gold mosaic ceiling and stained-glass window" loading="lazy" /></button></li>
+          </ul>
+        </div>
+
+        <!-- Folder: 推し活 (oshikatsu) -->
+        <div class="folder-panel" id="folder-oshi" role="region" aria-label="Oshikatsu photos">
+          <div class="folder-panel__head">
+            <h4 class="folder-panel__title"><span lang="ja">推し活</span> <small>oshikatsu</small></h4>
+            <button type="button" class="pet-toggle folder-panel__close">Close folder ✕</button>
+          </div>
+          <ul class="folder-panel__grid">
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/still-blue-tray.jpg" alt="Pale blue tray with a jelly dessert and a frosted cake, in front of a white Christmas tree and plush toys" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/oshi-tray-wand.jpg" alt="The same blue tray of desserts, with a hand holding a star wand and character badges" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/still-pancakes-card.jpg" alt="Pancakes with caramel and an iced coffee, with a hand holding a Kero-chan card in front" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/oshi-pancake-badge.jpg" alt="The pancakes and iced coffee with a cat-eared character badge tied with a ribbon" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/still-cards-tartan.jpg" alt="Illustrated character cards laid out on a red tartan tablecloth" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/oshi-cafe-window.jpg" alt="A café table by the window with character cards, a pink drink, a pink bag and small plush bears" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/still-badges-drink.jpg" alt="Round character badges laid out on a table next to a pink drink and a basket of pine cones" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/still-cards-flowers.jpg" alt="A hand holding two dark illustrated cards in front of a wall of white and pink flowers" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/photography/oshi-cards-orchids.jpg" alt="A hand holding the two dark illustrated cards against white and pink orchids" loading="lazy" /></button></li>
+          </ul>
+        </div>
+
+        <!-- Folder: 美甲 (nail art). The lilac one is a still from a short video. -->
+        <div class="folder-panel" id="folder-nails" role="region" aria-label="Nail art photos">
+          <div class="folder-panel__head">
+            <h4 class="folder-panel__title"><span lang="zh-Hans">美甲</span> <small>nail art</small></h4>
+            <button type="button" class="pet-toggle folder-panel__close">Close folder ✕</button>
+          </div>
+          <ul class="folder-panel__grid">
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-red-gold.jpg" alt="Long almond nails, clear with red-and-gold painted fish, a gold firework and a red knot charm" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-kuromi.jpg" alt="Nude nails with 3D charms — a Kuromi, a pink round character and a lilac one — over a black-and-white tiled floor" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-cat-eye-rainbow.jpg" alt="Short round cat-eye nails, each a different shimmer: pink, blue, copper, green-gold and amber" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-pink-flowers.jpg" alt="Sheer pink almond nails with hand-painted pink flowers and a small silver charm" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-silver-chains.jpg" alt="Two hands together showing pink and lilac nails with silver flower charms and dangling silver chains" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-pastel-hearts.jpg" alt="Two hands with short pale pink nails, painted with pastel stripes, small hearts and a red heart" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-yellow-hearts.jpg" alt="Short milky nails with little yellow hearts, a yellow cartoon face and a striped accent nail" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-charms.jpg" alt="Long pink nails with 3D cartoon charms: a pink face, a blue character and a doughnut" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-blue-gold.jpg" alt="Short nails, each different: a blue cartoon character, gold glitter, a gold shell shape and a pink-to-white fade" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-pink-blue.jpg" alt="Long square nails in silver glitter with big pink stars" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-cat-eye-grey.jpg" alt="Short round nails in smoky grey, brown and purple cat-eye shades, with a pearly silver thumb" loading="lazy" /></button></li>
+            <li><button type="button" class="thumb" data-cursor="🔍 Zoom"><img src="assets/nails/nails-lilac-chrome.jpg" alt="A curled hand showing short lilac nails, some with silver chrome stripes" loading="lazy" /></button></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- The big photo viewer. Esc or ✕ closes it; ← → flip through. -->
+      <dialog class="lightbox" aria-label="Photo viewer">
+        <div class="lightbox__stage">
+          <figure class="lightbox__figure">
+            <img class="lightbox__img" alt="" />
+          </figure>
+          <p class="lightbox__count" aria-live="polite"></p>
+          <button type="button" class="lightbox__btn lightbox__prev" aria-label="Previous photo">←</button>
+          <button type="button" class="lightbox__btn lightbox__next" aria-label="Next photo">→</button>
+          <button type="button" class="lightbox__btn lightbox__close" aria-label="Close photo viewer" autofocus>✕</button>
+        </div>
+      </dialog>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer" data-theme="light">
+    <div class="container">
+      <p>© <span id="year"></span> Elaine</p>
+      <button type="button" id="pet-toggle" class="pet-toggle">Hide the hamster</button>
+      <button type="button" id="motion-toggle" class="pet-toggle">Pause animations</button>
+    </div>
+  </footer>
+
+  <!-- Matter.js: a free physics library, used for the falling skill capsules -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js" defer></script>
+  <script src="i18n.js?v=20261007r"></script>
+  <script src="script.js?v=20261007r"></script>
+  <script src="pet.js?v=20261007r"></script>
+  <script src="home.js?v=20261007r" defer></script>
+</body>
 </html>

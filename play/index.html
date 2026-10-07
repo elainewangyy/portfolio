@@ -1,0 +1,964 @@
+<!doctype html>
+<!--
+  小鼠大牛 — a playable web version of my Desk Pet (a "lite" version of the
+  desktop app). First published as a Claude artifact:
+  https://claude.ai/artifact/EtS6UEnEG6AuQqA18C4qQX  (this copy: the 6 Oct
+  version: running wheel, corn "belly", and an EN / 中文 button).
+  Copied here so the portfolio works on its own (also offline / in the zip).
+  The Desk Pet page shows it in a frame; it also works opened on its own.
+  GIFs: pa.gif = crawling, shake.gif = looking around, sleepy.gif = sleepy.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>小鼠大牛</title>
+<script>
+  // Shown inside the Desk Pet page (in a frame)? Use the light colours to
+  // match the mint "playpen" around it. On its own it follows dark mode.
+  if (window.self !== window.top) document.documentElement.dataset.theme = "light";
+</script>
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap">
+<style>
+  /* Layout: one full-screen bedding floor. A name sticker on top, a sticker toolbar at the bottom,
+     a big white-wire cage with a clear running wheel in the middle; once the door is open the
+     hamster roams and rests against a wall. */
+  :root {
+    --bg: #e3efe4;        /* bedding-green floor */
+    --fleck: #cdb98a;     /* wood shavings */
+    --ink: #3b2a20;       /* sticker outlines and text */
+    --paper: #fffdf7;     /* sticker and bubble fill */
+    --muted: #6b5e4e;
+    --wire: #ffffff;      /* cage wire */
+    --wire-edge: #95a1aa; /* wire outline so white wire reads on a light floor */
+    --tray: #f7b6cb;      /* pink plastic tray */
+    --tray-side: #e897b2;
+    --tray-in: #f0a2bb;
+    --tray-rim: #fde1ea;
+    --tray-edge: #d07d98;
+    --acrylic: rgba(255, 255, 255, .34);  /* clear running wheel */
+    --acrylic-edge: #9cc3db;
+    --hub: #c9d2d8;
+    --corn: #ffc21f;
+    --on-corn: #3b2a20;
+    --shade: rgba(59, 42, 32, .16);
+    --font-display: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    --s: 130px;           /* hamster box, set from script */
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17231e; --fleck: #3d4b3a; --ink: #f1e3c8; --paper: #29251f; --muted: #b9a98f;
+      --wire: #e6ebef; --wire-edge: #4f5a62;
+      --tray: #d993ab; --tray-side: #c27b94; --tray-in: #b9718a; --tray-rim: #eab6c6; --tray-edge: #9c5a72;
+      --acrylic: rgba(255, 255, 255, .1); --acrylic-edge: #7fa3ba; --hub: #8f9aa1;
+      --shade: rgba(0, 0, 0, .35); color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17231e; --fleck: #3d4b3a; --ink: #f1e3c8; --paper: #29251f; --muted: #b9a98f;
+    --wire: #e6ebef; --wire-edge: #4f5a62;
+    --tray: #d993ab; --tray-side: #c27b94; --tray-in: #b9718a; --tray-rim: #eab6c6; --tray-edge: #9c5a72;
+    --acrylic: rgba(255, 255, 255, .1); --acrylic-edge: #7fa3ba; --hub: #8f9aa1;
+    --shade: rgba(0, 0, 0, .35); color-scheme: dark;
+  }
+
+  html, body { height: 100%; }
+  body {
+    margin: 0; overflow: hidden;
+    background: var(--bg); color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-user-select: none; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .app { height: 100%; display: flex; flex-direction: column; }
+
+  /* ---- name sticker ---- */
+  .tag { padding: 16px 16px 4px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; position: relative; z-index: 6; }
+  .tag h1 {
+    margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 32px; line-height: 1.1;
+    padding: 2px 14px 4px; background: var(--paper); border: 2.5px solid var(--ink); border-radius: 14px;
+    box-shadow: 0 3px 0 var(--ink); transform: rotate(-2deg);
+  }
+  .tag p { margin: 0; color: var(--muted); font-size: 14px; text-wrap: balance; min-width: 0; flex: 1 1 280px; }
+  .lang {
+    align-self: center; font: inherit; font-size: 14px; font-weight: 600; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+    background: var(--paper); color: var(--ink); border: 2px solid var(--ink); box-shadow: 0 2px 0 var(--ink);
+  }
+  .lang:active { transform: translateY(2px); box-shadow: none; }
+  .lang:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+  /* ---- the floor ---- */
+  #stage { position: relative; flex: 1; min-height: 0; touch-action: none; overflow: hidden; }
+  /* The cage, wheel and hamster live in one scene that zooms onto the wheel during a run. */
+  #scene { position: absolute; inset: 0; transition: transform .7s cubic-bezier(.3, .8, .3, 1); }
+  #cageFront { transition: opacity .5s ease, filter .5s ease; }
+  .zoomed #cageFront { opacity: .28; filter: blur(1.2px); }
+  .zoomed #cageBack .far { opacity: .3; }
+  #flecks { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  body.feeding #stage, body.feeding #stage * { cursor: none !important; }
+
+  /* ---- cage: two layers so the hamster sits between the back (wires, wheel) and the front wall ---- */
+  .cage-layer { position: absolute; left: 0; top: 0; pointer-events: none; }
+  .cage-layer svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  #cageBack { z-index: 1; }
+  #cageFront { z-index: 3; }
+  .wire-edge { fill: none; stroke: var(--wire-edge); stroke-width: 2.6; stroke-linecap: round; }
+  .wire-core { fill: none; stroke: var(--wire); stroke-width: 1.3; stroke-linecap: round; }
+  .frame-edge { fill: none; stroke: var(--wire-edge); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .frame-core { fill: none; stroke: var(--wire); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .far { opacity: .6; }
+  .tray-front { fill: var(--tray); stroke: var(--tray-edge); stroke-width: 1.5; }
+  .tray-side { fill: var(--tray-side); stroke: var(--tray-edge); stroke-width: 1.5; stroke-linejoin: round; }
+  .tray-in { fill: var(--tray-in); }
+  .tray-rim { fill: none; stroke: var(--tray-rim); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .tray-lip { stroke: var(--tray-side); stroke-width: 1; }
+  .cage-shadow { fill: var(--shade); }
+  #door { pointer-events: all; cursor: pointer; transform-box: fill-box; transform-origin: left center; transition: transform .45s cubic-bezier(.3, 1.4, .5, 1); }
+  #door .hit { fill: transparent; }
+  #door .latch { fill: var(--corn); stroke: var(--ink); stroke-width: 1.2; }
+  .open #door { transform: scaleX(.1); pointer-events: none; }
+
+  /* Clear acrylic running wheel on a stand. */
+  #wheel { pointer-events: all; cursor: pointer; }
+  .wheel-post { stroke: var(--acrylic-edge); stroke-width: 6; stroke-linecap: round; opacity: .75; }
+  .wheel-base { fill: var(--acrylic); stroke: var(--acrylic-edge); stroke-width: 1.5; }
+  .wheel-disc { fill: var(--acrylic); stroke: var(--acrylic-edge); stroke-width: 3; }
+  .wheel-track { fill: none; stroke: var(--acrylic-edge); stroke-width: 1.4; stroke-dasharray: 2 5; }
+  .wheel-spoke { stroke: var(--acrylic-edge); stroke-width: 3; stroke-linecap: round; opacity: .85; }
+  .wheel-hub { fill: var(--hub); stroke: var(--ink); stroke-width: 1; }
+  #wheelSpin { transform-box: view-box; transform-origin: 208px 84px; }
+  .spinning #wheelSpin { animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #pet {
+    position: absolute; left: 0; top: 0; width: var(--s); height: var(--s);
+    z-index: 4; cursor: grab; will-change: transform;
+  }
+  #pet.inside { z-index: 2; cursor: pointer; }
+  #pet.held { cursor: grabbing; }
+  #petBody { position: absolute; inset: 0; transform-origin: 50% 100%; transition: rotate .12s ease; }
+  #pet.held #petBody { rotate: -10deg; }
+  #pet.running #petBody { animation: bob .26s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-5%) scale(1.03, .97); } }
+  #petFlip { position: absolute; inset: 0; }
+  #petFlip.mirrored { transform: scaleX(-1); }
+  #petFlip img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%;
+    pointer-events: none; -webkit-user-drag: none;
+  }
+  #petFlip img.off { visibility: hidden; }
+  #petBody.hop { animation: hop .7s ease-out; }
+  @keyframes hop {
+    0% { transform: translateY(0) scale(1, 1); }
+    15% { transform: translateY(0) scale(1.1, .88); }
+    42% { transform: translateY(-24%) scale(.94, 1.08); }
+    70% { transform: translateY(0) scale(1.08, .92); }
+    100% { transform: translateY(0) scale(1, 1); }
+  }
+
+  .bubble {
+    position: absolute; left: 50%; bottom: calc(100% + 10px); z-index: 7;
+    width: max-content; max-width: 220px; padding: 7px 12px;
+    background: var(--paper); color: var(--ink);
+    border: 2.5px solid var(--ink); border-radius: 14px; box-shadow: 0 3px 0 var(--shade);
+    font-family: var(--font-display); font-size: 16px; line-height: 1.35; text-align: center;
+    opacity: 0; transform: translateX(-50%) translateY(6px) scale(.92); transform-origin: 50% 100%;
+    transition: opacity .18s ease, transform .18s ease; pointer-events: none;
+  }
+  .bubble.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  .bubble::before, .bubble::after {
+    content: ""; position: absolute; left: 50%; width: 0; height: 0; border-style: solid; border-color: transparent; border-bottom: 0;
+  }
+  .bubble::before { bottom: -12px; margin-left: -9px; border-width: 10px 9px 0; border-top-color: var(--ink); }
+  .bubble::after { bottom: -7px; margin-left: -6px; border-width: 7px 6px 0; border-top-color: var(--paper); }
+  /* While caged the bubble floats clear of the cage roof (22 cage units above the hamster box),
+     since the front wires are drawn over everything inside the cage. */
+  #pet.inside .bubble { bottom: calc(100% + var(--s) * .28 + 16px); }
+
+  .zzz {
+    position: absolute; right: 4%; top: 6%; font-family: var(--font-display); font-size: 22px; color: var(--muted);
+    pointer-events: none; animation: drift 2.4s ease-in-out infinite;
+  }
+  @keyframes drift { 0%, 100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(-10px); opacity: 1; } }
+
+  #corn {
+    position: absolute; left: 0; top: 0; width: 52px; height: 52px; margin: -26px 0 0 -26px;
+    z-index: 7; pointer-events: none; filter: drop-shadow(0 3px 2px var(--shade));
+    transition: rotate .12s ease-out;
+  }
+  #corn svg { width: 100%; height: 100%; display: block; }
+
+  /* ---- toolbar ---- */
+  .bar {
+    position: relative; z-index: 6;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+    padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  }
+  .btn {
+    font: inherit; font-family: var(--font-display); font-size: 18px; line-height: 1.2;
+    padding: 9px 18px 10px; border-radius: 999px; cursor: pointer;
+    background: var(--corn); color: var(--on-corn); border: 2.5px solid var(--ink); box-shadow: 0 3px 0 var(--ink);
+  }
+  .btn.ghost { background: var(--paper); color: var(--ink); }
+  .btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+  .btn:disabled { opacity: .6; cursor: default; }
+  .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  body.feeding #cornBtn { background: var(--paper); color: var(--ink); }
+  .count { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .count b { color: var(--ink); font-size: 17px; }
+  .chip { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1.5px dashed var(--ink); color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    #petBody.hop, .zzz, #pet.running #petBody, .spinning #wheelSpin { animation: none; }
+    .bubble, #corn, #petBody, #door { transition: none; }
+  }
+</style>
+
+<div class="app">
+  <header class="tag">
+    <h1 id="title">小鼠大牛</h1>
+    <p id="intro">点跑轮它会去跑步，打开笼子它会出来乱逛。拿玉米喂它，每吃满 5 根它会自己去跑轮消化掉 2 根，最多能吃 20 根。</p>
+    <button class="lang" id="langBtn" type="button">EN</button>
+  </header>
+
+  <div id="stage">
+    <canvas id="flecks" aria-hidden="true"></canvas>
+
+    <div id="scene">
+    <!-- Behind the hamster: floor shadow, the inside of the tray, the far wires, the running wheel. -->
+    <div class="cage-layer" id="cageBack">
+      <svg viewBox="0 0 300 180" aria-hidden="true">
+        <defs><g id="backWires"></g></defs>
+        <ellipse class="cage-shadow" cx="150" cy="166" rx="140" ry="8"/>
+        <polygon class="tray-in" points="10,118 40,100 290,100 260,118"/>
+        <g class="far"><use href="#backWires" class="wire-edge"/><use href="#backWires" class="wire-core"/></g>
+        <g id="wheel" role="button" aria-label="让大牛去跑轮">
+          <line class="wheel-post" x1="211" y1="84" x2="232" y2="129"/>
+          <ellipse class="wheel-base" cx="232" cy="130" rx="17" ry="3.5"/>
+          <circle class="wheel-disc" cx="208" cy="84" r="40"/>
+          <g id="wheelSpin">
+            <circle class="wheel-track" cx="208" cy="84" r="35"/>
+            <line class="wheel-spoke" x1="183.3" y1="59.3" x2="232.7" y2="108.7"/>
+            <line class="wheel-spoke" x1="232.7" y1="59.3" x2="183.3" y2="108.7"/>
+          </g>
+          <circle class="wheel-hub" cx="208" cy="84" r="4.2"/>
+        </g>
+      </svg>
+    </div>
+
+    <div id="pet" class="inside" role="button" tabindex="0" aria-label="小鼠大牛，点一下和它说话">
+      <div class="bubble" id="bubble" aria-live="polite"><span id="bubbleText"></span></div>
+      <div id="petBody">
+        <div id="petFlip">
+          <img id="imgIdle" src="pa.gif" alt="">
+          <img id="imgShake" class="off" src="shake.gif" alt="">
+          <img id="imgSleep" class="off" src="sleepy.gif" alt="">
+        </div>
+      </div>
+      <div class="zzz" id="zzz" hidden>z z</div>
+    </div>
+
+    <!-- In front of the hamster: the pink tray walls, the near wires and the door. -->
+    <div class="cage-layer" id="cageFront">
+      <svg viewBox="0 0 300 180" aria-hidden="true">
+        <defs>
+          <g id="frontWires"></g>
+          <g id="sideTopWires"></g>
+          <path id="frameLines" d="M10 118 V50 H260 V118 M10 50 L40 32 H290 V100 M260 50 L290 32"/>
+          <g id="doorWires">
+            <rect x="34" y="58" width="46" height="56" rx="2"/>
+            <line x1="41.7" y1="59" x2="41.7" y2="113"/><line x1="49.3" y1="59" x2="49.3" y2="113"/>
+            <line x1="57" y1="59" x2="57" y2="113"/><line x1="64.7" y1="59" x2="64.7" y2="113"/>
+            <line x1="72.3" y1="59" x2="72.3" y2="113"/><line x1="34" y1="86" x2="80" y2="86"/>
+          </g>
+          <mask id="doorGap">
+            <rect width="300" height="180" fill="#fff"/>
+            <rect x="34" y="58" width="46" height="56" fill="#000"/>
+          </mask>
+        </defs>
+        <g mask="url(#doorGap)"><use href="#frontWires" class="wire-edge"/><use href="#frontWires" class="wire-core"/></g>
+        <use href="#sideTopWires" class="wire-edge"/><use href="#sideTopWires" class="wire-core"/>
+        <use href="#frameLines" class="frame-edge"/><use href="#frameLines" class="frame-core"/>
+        <polygon class="tray-side" points="260,118 290,100 290,146 260,164"/>
+        <path class="tray-front" d="M10 118 H260 V156 Q260 164 252 164 H18 Q10 164 10 156 Z"/>
+        <line class="tray-lip" x1="12" y1="123" x2="258" y2="123"/>
+        <polyline class="tray-rim" points="10,118 260,118 290,100"/>
+        <g id="door" role="button" aria-label="打开笼门">
+          <rect class="hit" x="32" y="56" width="50" height="60"/>
+          <use href="#doorWires" class="frame-edge"/><use href="#doorWires" class="frame-core"/>
+          <circle class="latch" cx="77" cy="86" r="2.8"/>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <div id="corn" hidden><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="#3b2a20" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M22 54 C14 46 12 34 16 22 C24 28 28 40 30 52 Z" fill="#7cc35a"/>
+        <path d="M42 54 C50 46 52 34 48 22 C40 28 36 40 34 52 Z" fill="#5fae45"/>
+        <path d="M32 6 C42 6 46 20 44 34 C42 46 38 54 32 56 C26 54 22 46 20 34 C18 20 22 6 32 6 Z" fill="#ffd34d"/>
+        <g fill="#ffc21f" stroke-width="1.5">
+          <circle cx="28" cy="16" r="2.6"/><circle cx="36" cy="16" r="2.6"/>
+          <circle cx="25" cy="23" r="2.6"/><circle cx="32" cy="23" r="2.6"/><circle cx="39" cy="23" r="2.6"/>
+          <circle cx="25" cy="30" r="2.6"/><circle cx="32" cy="30" r="2.6"/><circle cx="39" cy="30" r="2.6"/>
+          <circle cx="26" cy="37" r="2.6"/><circle cx="32" cy="37" r="2.6"/><circle cx="38" cy="37" r="2.6"/>
+          <circle cx="29" cy="44" r="2.6"/><circle cx="35" cy="44" r="2.6"/>
+        </g>
+        <path d="M26 56 C22 50 21 44 22 38 C27 42 30 48 31 56 Z" fill="#8fd16a"/>
+        <path d="M38 56 C42 50 43 44 42 38 C37 42 34 48 33 56 Z" fill="#7cc35a"/>
+      </g>
+    </svg></div>
+  </div>
+
+  <footer class="bar">
+    <button class="btn" id="cornBtn" type="button" hidden>🌽 拿玉米喂它</button>
+    <button class="btn" id="cageBtn" type="button">🔓 打开笼子</button>
+    <button class="btn ghost" id="hideBtn" type="button">隐藏笼子</button>
+    <span class="count" id="count"></span>
+    <span class="chip" id="bellyNote" hidden></span>
+    <span class="chip" id="cornHint" hidden></span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  // Every visible string, in both languages. Lines come from the desktop pet 「大牛」.
+  const TEXT = {
+    zh: {
+      title: '小鼠大牛',
+      intro: '点跑轮它会去跑步，打开笼子它会出来乱逛。拿玉米喂它，每吃满 5 根它会自己去跑轮消化掉 2 根，最多能吃 20 根。',
+      petLabel: '小鼠大牛，点一下和它说话', doorLabel: '打开笼门', wheelLabel: '让大牛去跑轮',
+      open: '🔓 打开笼子', home: '🏠 关回笼子', homing: '回家中…', hide: '隐藏笼子', show: '显示笼子',
+      feed: '🌽 拿玉米喂它', drop: '放下玉米', full: '🌽 吃撑了，先去跑轮',
+      belly: (n, max) => `大牛肚子里有 <b>${n}</b> / ${max} 根玉米`,
+      noteStuffed: '吃撑了！先去跑轮', noteOwed: '吃饱了，要去跑轮消化',
+      hintTouch: '用手指按住屏幕拖着玉米跑', hintMouse: '大牛闻到玉米啦～ 按 Esc 或右键放下',
+      burned: n => `消化掉 ${n} 根玉米啦～`, more: '再跑一会儿！', free: '自由啦！', goingHome: '回家咯～',
+      backHome: '回到笼子里啦', allMine: '笼子收起来啦，整个地方都是我的！', mustRun: '吃撑了，必须去跑轮！',
+      goRun: '吃饱了，去跑轮消化一下～', stuffedNow: '吃撑啦！', hello: '放我出去嘛～',
+      langBtn: 'EN', langLabel: 'Switch to English',
+      responses: ['困困~', '摸摸我嘛', '嘿嘿，最喜欢你了', '今天也要加油哦！', '肚子有点饿了…'],
+      caged: ['放我出去嘛～', '想出去玩！', '笼门在这儿，点一下就开啦'],
+      wheel: ['跑跑跑～', '锻炼身体！', '冲呀冲呀', '今天也要跑一万步'],
+      idle: ['困困~', '你在忙什么呢？', '记得喝口水哦', '让眼睛休息一下吧', '我一直在这儿陪着你', '起来动一动吧~'],
+      eat: ['好吃！', '嗷呜嗷呜～', '谢谢你的玉米！', '还想再吃一根～'],
+    },
+    en: {
+      title: 'Daniu the Hamster',
+      intro: 'Tap the wheel and Daniu goes for a run; open the cage and it comes out to explore. Feed it corn: every 5 corns it runs 2 off on the wheel, and it can hold 20 at most.',
+      petLabel: 'Daniu the hamster, tap to say hi', doorLabel: 'Open the cage door', wheelLabel: 'Send Daniu to the wheel',
+      open: '🔓 Open cage', home: '🏠 Back to cage', homing: 'Heading home…', hide: 'Hide cage', show: 'Show cage',
+      feed: '🌽 Feed corn', drop: 'Put corn down', full: '🌽 Too full, wheel first',
+      belly: (n, max) => `Corn in Daniu's belly: <b>${n}</b> / ${max}`,
+      noteStuffed: 'Stuffed! Wheel time', noteOwed: 'Full, off to the wheel soon',
+      hintTouch: 'Hold and drag to move the corn', hintMouse: 'Daniu smells corn! Esc or right-click to put it down',
+      burned: n => `Burned off ${n} corns~`, more: 'A bit more running!', free: 'Free at last!', goingHome: 'Going home~',
+      backHome: 'Back in my cage', allMine: 'The cage is gone, the whole place is mine!', mustRun: 'Too stuffed, I have to run!',
+      goRun: "I'm full, time to run it off~", stuffedNow: "I'm stuffed!", hello: 'Let me out~',
+      langBtn: '中文', langLabel: '切换到中文',
+      responses: ['So sleepy~', 'Pet me please', 'Hehe, you are my favourite', 'You can do it today!', 'My tummy is rumbling…'],
+      caged: ['Let me out~', 'I want to play outside!', "The door's right here, just tap it"],
+      wheel: ['Run run run~', 'Workout time!', 'Go go go!', '10,000 steps today'],
+      idle: ['So sleepy~', 'What are you up to?', 'Remember to drink some water', 'Rest your eyes for a bit', "I'm right here with you", 'Get up and stretch~'],
+      eat: ['Yum!', 'Nom nom nom~', 'Thanks for the corn!', 'One more, please~'],
+    },
+  };
+  // First visit follows the browser; after that the viewer's own choice is remembered.
+  let lang = 'en'; // the portfolio starts in English (was: follow the browser's language)
+  try { const saved = localStorage.getItem('daniu-lang'); if (saved === 'zh' || saved === 'en') lang = saved; } catch {}
+  let T = TEXT[lang];
+  const WALK_SPEED = 60;      // px per second while wandering
+  const CAGE_SPEED = 110;     // px per second pottering between spots inside the cage
+  const RUN_SPEED = 240;      // px per second chasing corn or running home
+  const WANDER_DELAY = 4000;  // stays put this long after being touched
+  const SLEEP_AFTER = 60000;  // one minute without attention
+  const SHAKE_MS = 2500;
+  // Cage drawing is 300 × 180 units. The hamster box is 80 units tall. At home it stands on
+  // the bedding (y 134) so the pink wall hides its feet; on the wheel it stands on the track.
+  const UNITS_PER_PET = 80;
+  const SPOTS = { home: { x: 125, y: 134 }, wheel: { x: 208, y: 121 } };
+
+  const $ = id => document.getElementById(id);
+  const stage = $('stage'), pet = $('pet'), corn = $('corn');
+  const cageLayers = [$('cageBack'), $('cageFront')];
+  const imgs = { idle: $('imgIdle'), shake: $('imgShake'), sleep: $('imgSleep') };
+  const pick = list => list[Math.floor(Math.random() * list.length)];
+  const coarse = matchMedia('(pointer: coarse)').matches;
+
+  // ---- cage wires, generated once ----
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function addLines(id, lines) {
+    const g = $(id);
+    for (const [x1, y1, x2, y2] of lines) {
+      const l = document.createElementNS(SVGNS, 'line');
+      l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+      g.appendChild(l);
+    }
+  }
+  const range = (from, to, step) => { const out = []; for (let v = from; v <= to + 1e-6; v += step) out.push(+v.toFixed(2)); return out; };
+  addLines('backWires', [
+    ...range(40, 290, 10).map(x => [x, 32, x, 100]),
+    [40, 66, 290, 66],
+    ...[.25, .5, .75].map(t => [10 + 30 * t, 50 - 18 * t, 10 + 30 * t, 118 - 18 * t]),
+    [10, 84, 40, 66],
+  ]);
+  addLines('frontWires', [...range(18, 252, 9).map(x => [x, 50, x, 118]), [10, 84, 260, 84]]);
+  addLines('sideTopWires', [
+    ...[.25, .5, .75].map(t => [260 + 30 * t, 50 - 18 * t, 260 + 30 * t, 118 - 18 * t]),
+    [260, 84, 290, 66],
+    ...range(25, 250, 15).map(x => [x, 50, x + 30, 32]),
+    [25, 41, 275, 41],
+  ]);
+
+  let W = 0, H = 0, S = 130;
+  let cageBox = { x: 0, y: 0, k: 1 };
+  let x = 0, y = 0;                 // hamster box, top-left in stage pixels
+  let caged = true;                 // every visit starts with the hamster in its cage
+  let cageHidden = false;
+  let homing = false;               // running back into the cage
+  let spot = 'home';                // where it is (or is heading) inside the cage
+  let spotMoving = false;
+  let running = false;              // on the wheel
+  let wheelUntil = 0, nextWheelAt = performance.now() + 8000, wantWheel = false;
+  let target = null;                // unfinished wander leg, always a point on a wall
+  let pauseUntil = 0;
+  let facing = 'right';
+  let lastTouch = performance.now();
+  let shakeUntil = 0;
+  let sleeping = false;
+  let hovered = false;
+  let feeding = false;
+  let cornX = 0, cornY = 0, cornTilt = 0;
+  let cornArmed = false;            // the corn must be away from the hamster once before it can be eaten
+  let pointer = null;               // last mouse position over the floor, stage pixels
+  let drag = null;                  // { id, dx, dy, sx, sy, moved, pinned }
+  let shakeRun = 0;
+  let sayTimer = null;
+
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), Math.max(lo, hi));
+  const maxX = () => Math.max(0, W - S);
+  const maxY = () => Math.max(0, H - S);
+
+  // ---- belly: corn eaten minus corn run off, kept per viewer ----
+  // Every 5th corn earns a wheel run that burns 2. Under 20, offered corn wins over
+  // the run; at 20 it is stuffed and must run before it will take more.
+  const BELLY_MAX = 20, RUN_EVERY = 5, RUN_BURNS = 2;
+  let belly = 0;
+  try { belly = clamp(Math.round(Number(localStorage.getItem('daniu-belly')) || 0), 0, BELLY_MAX); } catch {}
+  let runOwed = false;        // a wheel run has been earned and not started yet
+  let owedAt = 0;             // not before this time, so the eating bubble shows first
+  let owedRun = false;        // the current trip to (or turn on) the wheel is the earned run
+  let releaseAfter = null;    // { hidden } when the earned run fetched it from outside the cage
+  const stuffed = () => belly >= BELLY_MAX;
+  if (belly > 0 && belly % RUN_EVERY === 0) { runOwed = true; owedAt = performance.now() + 3000; }
+
+  function saveBelly() {
+    try { localStorage.setItem('daniu-belly', String(belly)); } catch {}
+  }
+  function showCount() {
+    $('count').innerHTML = T.belly(belly, BELLY_MAX);
+    const note = stuffed() ? T.noteStuffed : runOwed || owedRun ? T.noteOwed : '';
+    $('bellyNote').textContent = note;
+    $('bellyNote').hidden = !note;
+  }
+  showCount();
+
+  // ---- layout ----
+  function measure() {
+    const r = stage.getBoundingClientRect();
+    W = r.width; H = r.height;
+    if (!W || !H) return;
+    // The cage is 3.75 hamsters wide and 2.25 tall; keep it on screen with some floor around it.
+    S = Math.round(Math.max(56, Math.min(130, W / 4.1, H / 2.6)));
+    document.documentElement.style.setProperty('--s', S + 'px');
+    const k = S / UNITS_PER_PET, cw = Math.round(300 * k), ch = Math.round(180 * k);
+    cageBox = { k, x: Math.round((W - cw) / 2), y: Math.round(clamp((H - ch) / 2, 0, H - ch)) };
+    for (const el of cageLayers) {
+      Object.assign(el.style, { left: cageBox.x + 'px', top: cageBox.y + 'px', width: cw + 'px', height: ch + 'px' });
+    }
+    if (caged && !spotMoving) ({ x, y } = spotPos(spot));
+    else if (!caged) { x = clamp(x, 0, maxX()); y = clamp(y, 0, maxY()); }
+    if (running) setZoom(true);
+    drawFlecks();
+  }
+
+  // During a run: bring the wheel to the middle of the floor and enlarge it, and fade the
+  // front wires and tray so the hamster on the wheel is easy to see.
+  function setZoom(on) {
+    const scene = $('scene');
+    stage.classList.toggle('zoomed', on);
+    if (!on) { scene.style.transform = ''; return; }
+    const ox = cageBox.x + 208 * cageBox.k, oy = cageBox.y + 84 * cageBox.k; // wheel hub
+    const z = clamp((Math.min(W, H) * 0.62) / S, 1.3, 2.6);                     // wheel is S across
+    scene.style.transformOrigin = `${ox}px ${oy}px`;
+    scene.style.transform = `translate(${W / 2 - ox}px, ${H / 2 - oy}px) scale(${z})`;
+  }
+  const spotPos = name => ({
+    x: cageBox.x + SPOTS[name].x * cageBox.k - S / 2,
+    y: cageBox.y + SPOTS[name].y * cageBox.k - S,
+  });
+
+  // Wood shavings on the floor.
+  function drawFlecks() {
+    const c = $('flecks'), dpr = devicePixelRatio || 1;
+    c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+    const g = c.getContext('2d');
+    g.scale(dpr, dpr);
+    g.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--fleck').trim();
+    g.lineCap = 'round';
+    let seed = 7;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const n = Math.round((W * H) / 5200);
+    for (let i = 0; i < n; i++) {
+      const px = rnd() * W, py = rnd() * H, len = 6 + rnd() * 12, a = rnd() * Math.PI;
+      g.lineWidth = 1.5 + rnd() * 2;
+      g.beginPath();
+      g.moveTo(px, py);
+      g.quadraticCurveTo(px + Math.cos(a) * len * .5 + 4, py + Math.sin(a) * len * .5 - 4, px + Math.cos(a) * len, py + Math.sin(a) * len);
+      g.stroke();
+    }
+  }
+
+  // ---- speech ----
+  function say(text, ms) {
+    $('bubbleText').textContent = text;
+    $('bubble').classList.add('show');
+    clearTimeout(sayTimer);
+    sayTimer = setTimeout(() => $('bubble').classList.remove('show'), ms);
+  }
+
+  function touched() {
+    lastTouch = performance.now();
+    sleeping = false;
+  }
+
+  function react() {
+    touched();
+    say(pick(running ? T.wheel : caged ? T.caged : T.responses), 2600);
+    shakeUntil = performance.now() + SHAKE_MS;
+    shakeRun++;
+    imgs.shake.src = 'shake.gif?r=' + shakeRun; // restart the gif from its first frame
+  }
+
+  function hop() {
+    const b = $('petBody');
+    b.classList.remove('hop');
+    void b.offsetWidth;
+    b.classList.add('hop');
+  }
+
+  // ---- toolbar ----
+  function updateBar() {
+    const btn = $('cageBtn');
+    btn.textContent = caged ? T.open : homing ? T.homing : T.home;
+    btn.classList.toggle('ghost', !caged);
+    btn.disabled = homing;
+    btn.hidden = cageHidden;
+    $('hideBtn').textContent = cageHidden ? T.show : T.hide;
+    $('hideBtn').disabled = homing;
+    // On its way to an earned run (under 20) it can still be tempted with corn.
+    const cornBtn = $('cornBtn');
+    cornBtn.hidden = caged || (homing && !owedRun);
+    cornBtn.disabled = stuffed() && !feeding;
+    cornBtn.textContent = feeding ? T.drop : stuffed() ? T.full : T.feed;
+    pet.classList.toggle('inside', caged);
+    for (const el of cageLayers) {
+      el.classList.toggle('open', !caged);
+      el.hidden = cageHidden;
+    }
+  }
+
+  // ---- inside the cage: home spot and the running wheel ----
+  function setRunning(on) {
+    running = on;
+    $('cageBack').classList.toggle('spinning', on);
+    pet.classList.toggle('running', on);
+    setZoom(on);
+  }
+
+  function cageTick(t, dt) {
+    if (wantWheel && spot === 'home' && !spotMoving && !sleeping) {
+      wantWheel = false;
+      spot = 'wheel';
+      spotMoving = true;
+    }
+    if (spotMoving) {
+      const p = spotPos(spot);
+      if (stepToward(p.x, p.y, CAGE_SPEED, dt)) {
+        spotMoving = false;
+        if (spot === 'wheel') {
+          wheelUntil = t + 6000 + Math.random() * 5000;
+          setRunning(true);
+          say(pick(T.wheel), 2400);
+        } else {
+          nextWheelAt = t + 25000 + Math.random() * 20000;
+          // Fetched in for its earned run: let it back out the way it was.
+          if (releaseAfter) {
+            const hide = releaseAfter.hidden;
+            releaseAfter = null;
+            openCage();
+            if (hide) { cageHidden = true; updateBar(); }
+          }
+        }
+      }
+      return;
+    }
+    if (running && t > wheelUntil) {
+      setRunning(false);
+      if (owedRun) {
+        owedRun = false;
+        belly = Math.max(0, belly - RUN_BURNS);
+        saveBelly();
+        showCount();
+        updateBar();
+        say(T.burned(RUN_BURNS), 2400);
+      }
+      spot = 'home';
+      spotMoving = true;
+      return;
+    }
+    // Every so often it goes for a run by itself.
+    if (spot === 'home' && !running && !sleeping && !wantWheel && t > nextWheelAt && t - lastTouch > 3000) wantWheel = true;
+  }
+
+  function useWheel() {
+    if (cageHidden) return;
+    if (runOwed && !owedRun && !homing) return startOwedRun(); // this run counts as the earned one
+    touched();
+    if (running) {
+      wheelUntil = Math.max(wheelUntil, performance.now() + 5000);
+      say(T.more, 1800);
+      return;
+    }
+    wantWheel = true;
+    if (!caged) goHome(); // runs back in, then hops on the wheel
+  }
+
+  function openCage() {
+    if (!caged) return;
+    caged = false;
+    // Let out before an earned run was finished: it still owes the run and goes back later.
+    if (owedRun) {
+      owedRun = false;
+      runOwed = true;
+      owedAt = performance.now() + 5000;
+      showCount();
+    }
+    setRunning(false);
+    spot = 'home'; spotMoving = false; wantWheel = false;
+    touched();
+    lastTouch = performance.now() - WANDER_DELAY + 900; // start exploring right after the hop
+    target = null;
+    pauseUntil = 0;
+    updateBar();
+    say(T.free, 2200);
+    hop();
+  }
+
+  function goHome() {
+    if (caged || homing || cageHidden) return;
+    if (feeding) setFeeding(false);
+    homing = true;
+    target = null;
+    touched();
+    updateBar();
+    say(T.goingHome, 2000);
+  }
+
+  function arriveHome() {
+    homing = false;
+    caged = true;
+    spot = 'home'; spotMoving = false;
+    ({ x, y } = spotPos('home'));
+    nextWheelAt = performance.now() + 25000 + Math.random() * 20000;
+    touched();
+    updateBar();
+    if (!wantWheel) say(T.backHome, 2400);
+  }
+
+  // The earned run: from inside the cage it walks to the wheel; from outside it runs home
+  // first (showing the cage if it was hidden) and is let back out afterwards.
+  function startOwedRun() {
+    runOwed = false;
+    owedRun = true;
+    touched();
+    if (caged) {
+      if (running) wheelUntil = Math.max(wheelUntil, performance.now() + 6000);
+      else wantWheel = true;
+    } else {
+      releaseAfter = { hidden: cageHidden };
+      cageHidden = false;
+      wantWheel = true;
+      homing = true;
+      target = null;
+    }
+    showCount();
+    updateBar();
+    say(stuffed() ? T.mustRun : T.goRun, 2400);
+  }
+
+  // Under 20, corn beats the wheel: turn back and follow the corn; the run waits.
+  function postponeOwedRun() {
+    homing = false;
+    owedRun = false;
+    runOwed = true;
+    wantWheel = false;
+    if (releaseAfter && releaseAfter.hidden) cageHidden = true;
+    releaseAfter = null;
+    showCount();
+    updateBar();
+  }
+
+  function toggleCageHidden() {
+    if (homing) return;
+    if (!cageHidden && caged) openCage(); // a hidden cage cannot hold it
+    cageHidden = !cageHidden;
+    wantWheel = false;
+    updateBar();
+    if (cageHidden) say(T.allMine, 2600);
+  }
+
+  // ---- wandering: free roaming, but every stop is against a wall ----
+  function edgePoint() {
+    const w = maxX(), h = maxY(), len = 2 * (w + h);
+    if (len <= 0) return null;
+    let s = Math.random() * len;
+    let p;
+    if (s < w) p = { x: s, y: 0 };
+    else if ((s -= w) < h) p = { x: w, y: s };
+    else if ((s -= h) < w) p = { x: w - s, y: h };
+    else p = { x: 0, y: h - (s - w) };
+    return Math.hypot(p.x - x, p.y - y) < Math.min(150, len / 6) ? null : p;
+  }
+
+  function stepToward(tx, ty, speed, dt) {
+    const dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy), step = speed * dt;
+    if (Math.abs(dx) > 1) facing = dx < 0 ? 'left' : 'right';
+    if (d <= step) { x = tx; y = ty; return true; }
+    x += (dx / d) * step; y += (dy / d) * step;
+    return false;
+  }
+
+  function wander(t, dt) {
+    if (sleeping || hovered || drag || t < shakeUntil || t - lastTouch < WANDER_DELAY) return;
+    if (!target) {
+      if (t < pauseUntil) return;
+      target = edgePoint();
+      if (!target) { pauseUntil = t + 500; return; }
+    }
+    if (stepToward(clamp(target.x, 0, maxX()), clamp(target.y, 0, maxY()), WALK_SPEED, dt)) {
+      target = null;
+      pauseUntil = t + 2000 + Math.random() * 4000;
+    }
+  }
+
+  // Sleep only when it is settled: not mid-walk, not on the wheel.
+  function maybeSleep(t) {
+    if (sleeping || feeding || homing || drag || target || running || spotMoving || wantWheel || runOwed || owedRun || t < shakeUntil) return;
+    if (t - lastTouch >= SLEEP_AFTER) sleeping = true;
+  }
+
+  // ---- feeding ----
+  function setFeeding(on) {
+    if (on && (caged || stuffed() || (homing && !owedRun))) return;
+    if (on && homing && owedRun) postponeOwedRun();
+    feeding = on;
+    document.body.classList.toggle('feeding', on);
+    updateBar();
+    $('cornHint').hidden = !on;
+    $('cornHint').textContent = coarse ? T.hintTouch : T.hintMouse;
+    corn.hidden = !on;
+    if (on) {
+      touched();
+      startCorn();
+      placeCorn();
+    }
+  }
+
+  // Each feeding starts the corn fresh: under the mouse if it is over the floor,
+  // otherwise across the floor from the hamster. Reusing the last spot would put
+  // the corn in its mouth and end the feeding on the very next frame.
+  function startCorn() {
+    cornTilt = 0;
+    cornArmed = false;
+    const inside = pointer && pointer.x >= 0 && pointer.y >= 0 && pointer.x <= W && pointer.y <= H;
+    const onPet = inside && Math.hypot(pointer.x - (x + S / 2), pointer.y - (y + S / 2)) < S;
+    if (inside && !onPet) { cornX = pointer.x; cornY = pointer.y; }
+    else {
+      cornX = x + S / 2 < W / 2 ? W * 0.8 : W * 0.2;
+      cornY = y + S / 2 < H / 2 ? H * 0.75 : H * 0.25;
+    }
+  }
+
+  function placeCorn() {
+    corn.style.left = cornX + 'px';
+    corn.style.top = cornY + 'px';
+    corn.style.rotate = cornTilt + 'deg';
+  }
+
+  function chase(t, dt) {
+    const cx = x + S / 2, cy = y + S / 2;
+    const d = Math.hypot(cornX - cx, cornY - cy);
+    if (d > S * 0.9) cornArmed = true;
+    if (cornArmed && d <= S * 0.3) return eat(t);
+    const bx = x, by = y;
+    stepToward(clamp(cornX - S / 2, 0, maxX()), clamp(cornY - S / 2, 0, maxY()), RUN_SPEED, dt);
+    // Corn held past a wall: as close as it can get counts.
+    if (cornArmed && Math.abs(x - bx) < 0.01 && Math.abs(y - by) < 0.01 && d <= S * 0.75) eat(t);
+  }
+
+  function eat(t) {
+    setFeeding(false);
+    belly = Math.min(BELLY_MAX, belly + 1);
+    saveBelly();
+    if (belly % RUN_EVERY === 0) {
+      runOwed = true;
+      owedAt = t + 1600;
+    }
+    lastTouch = t;
+    say(stuffed() ? T.stuffedNow : pick(T.eat), 3000);
+    hop();
+    showCount();
+    updateBar();
+  }
+
+  // ---- pointer input ----
+  function stagePoint(e) {
+    const r = stage.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  window.addEventListener('pointermove', e => {
+    if (e.pointerType === 'mouse') pointer = stagePoint(e);
+    if (feeding && (e.pointerType === 'mouse' || e.buttons)) {
+      const p = stagePoint(e);
+      cornTilt = clamp((p.x - cornX) * 1.5, -25, 25);
+      cornX = p.x; cornY = p.y;
+      placeCorn();
+    }
+    // Inside the cage it can be clicked, not dragged out through the bars.
+    if (drag && e.pointerId === drag.id && !drag.pinned) {
+      const p = stagePoint(e);
+      if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 5) return;
+      drag.moved = true;
+      pet.classList.add('held');
+      x = clamp(p.x - drag.dx, 0, maxX());
+      y = clamp(p.y - drag.dy, 0, maxY());
+    }
+  });
+
+  stage.addEventListener('pointerdown', e => {
+    if (!feeding) return;
+    const p = stagePoint(e);
+    cornX = p.x; cornY = p.y;
+    placeCorn();
+  });
+
+  pet.addEventListener('pointerdown', e => {
+    if (feeding || homing || e.button > 0) return;
+    e.preventDefault();
+    pet.setPointerCapture(e.pointerId);
+    const p = stagePoint(e);
+    drag = { id: e.pointerId, dx: p.x - x, dy: p.y - y, sx: e.clientX, sy: e.clientY, moved: false, pinned: caged };
+    touched();
+  });
+
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    const wasClick = !drag.moved;
+    drag = null;
+    pet.classList.remove('held');
+    touched();
+    if (wasClick) react();
+  }
+  pet.addEventListener('pointerup', endDrag);
+  pet.addEventListener('pointercancel', endDrag);
+
+  pet.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hovered = true; });
+  pet.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') hovered = false; });
+  pet.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); react(); }
+  });
+
+  $('door').addEventListener('click', openCage);
+  $('wheel').addEventListener('click', () => { if (!feeding) useWheel(); });
+  $('cageBtn').addEventListener('click', () => (caged ? openCage() : goHome()));
+  $('hideBtn').addEventListener('click', toggleCageHidden);
+  $('cornBtn').addEventListener('click', () => setFeeding(!feeding));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && feeding) setFeeding(false); });
+  stage.addEventListener('contextmenu', e => {
+    if (!feeding) return;
+    e.preventDefault();
+    setFeeding(false);
+  });
+
+  // ---- frame loop ----
+  let last = performance.now();
+  function frame(t) {
+    const dt = Math.min(0.1, (t - last) / 1000);
+    last = t;
+    // An earned run starts once nobody is holding out corn or dragging it.
+    if (runOwed && !owedRun && !feeding && !drag && !homing && t >= owedAt) startOwedRun();
+    if (homing) {
+      const h = spotPos('home');
+      if (stepToward(h.x, h.y, RUN_SPEED, dt)) arriveHome();
+    } else if (feeding) chase(t, dt);
+    else if (caged) cageTick(t, dt);
+    else if (!drag) wander(t, dt);
+    maybeSleep(t);
+
+    const look = t < shakeUntil ? 'shake' : sleeping ? 'sleep' : 'idle';
+    for (const k in imgs) imgs[k].classList.toggle('off', k !== look);
+    $('zzz').hidden = !sleeping;
+    $('petFlip').classList.toggle('mirrored', facing === 'left'); // the art faces right
+    pet.style.transform = `translate(${x}px, ${y}px)`;
+    requestAnimationFrame(frame);
+  }
+
+  // Idle chatter when nobody has paid attention for a while.
+  (function chatter() {
+    setTimeout(() => {
+      if (!sleeping && !feeding && !running && performance.now() - lastTouch >= 30000) say(pick(caged ? T.caged : T.idle), 4000);
+      chatter();
+    }, 40000 + Math.random() * 50000);
+  })();
+
+  // ---- language ----
+  function applyLang(next) {
+    lang = next;
+    T = TEXT[lang];
+    try { localStorage.setItem('daniu-lang', lang); } catch {}
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    $('title').textContent = T.title;
+    $('intro').textContent = T.intro;
+    pet.setAttribute('aria-label', T.petLabel);
+    $('door').setAttribute('aria-label', T.doorLabel);
+    $('wheel').setAttribute('aria-label', T.wheelLabel);
+    $('langBtn').textContent = T.langBtn;
+    $('langBtn').setAttribute('aria-label', T.langLabel);
+    $('cornHint').textContent = coarse ? T.hintTouch : T.hintMouse;
+    $('bubble').classList.remove('show'); // the old line was in the other language
+    showCount();
+    updateBar();
+  }
+  $('langBtn').addEventListener('click', () => applyLang(lang === 'zh' ? 'en' : 'zh'));
+
+  // ---- start: in the cage, asking to be let out ----
+  measure();
+  applyLang(lang);
+  addEventListener('resize', measure);
+  new ResizeObserver(measure).observe(stage);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawFlecks);
+  new MutationObserver(drawFlecks).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  requestAnimationFrame(frame);
+  setTimeout(() => say(T.hello, 2800), 500);
+})();
+</script>
+
+</body></html>
