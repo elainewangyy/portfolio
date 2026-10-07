@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  PROJECT PAGE  —  Generating Warm-up Games (DSDN142 Project 2)
+  =============================================================
+  The text is condensed from my Project 2 document
+  ("Designing Choices"), in my own words. Images are web-sized
+  copies of my own sketches and screenshots.
+  =============================================================
+-->
+<html lang="en-NZ">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generating Warm-up Games — Elaine</title>
+  <meta name="description" content="Generating Warm-up Games: a decision-driven web experience that helps teachers pick the right warm-up activity for their class." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+  <!-- Fonts: General Sans (free, Fontshare) + Caveat for handwritten notes (free, Google Fonts) -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css?v=20261007r" />
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav__logo">Elaine</a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav__links">
+        <a href="index.html#work">Work</a>
+        <a href="index.html#about">About</a>
+      </nav>
+      <!-- Narration: reads the page aloud (see script.js, section 6) -->
+      <button type="button" class="narrate-btn" aria-pressed="false">
+        <span aria-hidden="true">🔊</span> Narration
+      </button>
+      <!-- Narration speed (shown while Narration is on) -->
+      <label class="narrate-speed" hidden>
+        <span class="narrate-speed__label">Speed</span>
+        <select class="narrate-speed__select">
+          <option value="0.75">0.75×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+          <option value="3">3×</option>
+          <option value="4">4×</option>
+          <option value="6">6×</option>
+          <option value="8">8×</option>
+        </select>
+      </label>
+      <!-- Feed Da Niu: the mouse becomes corn and Da Niu chases it (script.js, section 7) -->
+      <button type="button" class="feed-btn" aria-pressed="false">
+        <span aria-hidden="true">🌽</span> Feed<span class="feed-btn__more"> Da Niu</span>
+      </button>
+      <!-- Language: English / 简体中文 / 繁體中文 for the whole site (i18n.js) -->
+      <label class="lang-pick">
+        <span class="sr-only">Language</span>
+        <span class="lang-pick__globe" aria-hidden="true">🌐</span>
+        <select class="lang-pick__select">
+          <option value="en" lang="en">EN</option>
+          <option value="hans" lang="zh-Hans">简体</option>
+          <option value="hant" lang="zh-Hant">繁體</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== THE GAME ITSELF =====
+         The real website, playable right here. It's my Figma Make
+         project built into plain files (the warmup/ folder). The older,
+         longer version of this page is in archive/. -->
+    <section class="game-hero game-hero--warmup tone-light" aria-labelledby="page-title">
+      <div class="game-hero__head">
+        <div>
+          <p class="game-hero__kicker">DSDN142 Project 2 · Figma Make · 2026</p>
+          <h1 class="game-hero__title" id="page-title">Generating Warm-up Games</h1>
+          <p class="game-hero__text">
+            This interactive website helps teachers quickly choose a warm-up
+            activity — saving preparation time and helping students get engaged
+            and ready to learn. Try it right here.
+          </p>
+        </div>
+        <a class="game-hero__full" href="warmup/index.html" target="_blank" rel="noopener">Open full screen ↗</a>
+      </div>
+      <div class="game-hero__frame">
+        <iframe src="warmup/index.html"
+                title="Generating Warm-up Games — the playable website: answer a few questions and get a warm-up game that fits your class"></iframe>
+      </div>
+      <a class="game-hero__scroll" href="#how-i-made-it">how I made it ↓</a>
+    </section>
+
+    <article class="section container project" id="how-i-made-it">
+
+      <h2 class="project__subtitle">The idea</h2>
+      <div class="project__description">
+        <p>
+          A warm-up is a small but important part of a class. Teachers may
+          want one, but don't always have time to prepare something suitable.
+        </p>
+        <p>
+          My first idea was simple: the teacher gives their lesson content and
+          the AI makes a warm-up game. While developing it, I realised lesson
+          content isn't the only thing that decides whether a warm-up works —
+          time, internet access, solo or group work, and whether there's any
+          lesson material all matter. So the concept changed from “generate a
+          game” to “help the teacher decide which game fits their situation”.
+        </p>
+      </div>
+
+      <!-- ===== CHOICES ===== -->
+      <h2 class="project__subtitle">Every choice changes something</h2>
+      <p class="project__description">
+        The final branching structure narrows the options with each decision,
+        instead of showing every possible game at once. The final activity
+        isn't random — it reflects every decision the teacher made. I learned
+        that you don't need many options, but each one needs a consequence: if
+        two choices lead to the same result, the choice stops meaning anything.
+      </p>
+      <figure class="project__figure">
+        <img src="assets/pj2/flow-branching.jpg" alt="Branching flow diagram in Figma, with many paths splitting from the first question to different final games" loading="lazy" />
+        <figcaption>The final branching structure</figcaption>
+      </figure>
+
+      <!-- ===== AI ===== -->
+      <h2 class="project__subtitle">Building it with AI</h2>
+      <p class="project__description">
+        I built the working website in Figma Make. I used AI to prototype the
+        structure and interactions, then tested, found problems and refined
+        my prompts — the first generated version was never the final design.
+        I made or modified all the media myself — no stock images or icons.
+      </p>
+
+      <a class="project__back" href="index.html#work">← Back to my work</a>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Elaine</p>
+      <button type="button" id="pet-toggle" class="pet-toggle">Hide the hamster</button>
+      <button type="button" id="motion-toggle" class="pet-toggle">Pause animations</button>
+    </div>
+  </footer>
+
+  <script src="i18n.js?v=20261007r"></script>
+
+  <script src="script.js?v=20261007r"></script>
+  <script src="pet.js?v=20261007r"></script>
+</body>
+</html>

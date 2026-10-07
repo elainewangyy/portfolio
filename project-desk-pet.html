@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  PROJECT PAGE  —  Desk Pet (my personal project)
+  =============================================================
+  The page is Da Niu's home. The idea of an immersive "habitat" you
+  can poke, with "scroll to dive", is borrowed from crechetank.com
+  (a fish-tank studio site) — but it's all Da Niu's own world.
+
+    0. COVER  - the cloth over the cage at night; lift it to start
+    1. PLAY   - the playable web version of Desk Pet (play/index.html)
+    2–6.      - scroll to burrow down through the bedding: each
+                layer is part of the project write-up, and the
+                deepest one is the real Da Niu. Da Niu digs a
+                winding tunnel down the side as you go.
+
+  The moving parts are in cage.js. Earlier versions of this page are
+  in archive/ (project-desk-pet-before-cage.html and
+  project-desk-pet-cage-version.html).
+
+  Parts of the description began as a draft Claude built from the
+  facts in the Desk Pet README (see process-notes.md); the paragraph
+  about why I made it is in my own words.
+  =============================================================
+-->
+<html lang="en-NZ">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desk Pet — Elaine</title>
+  <meta name="description" content="Desk Pet: a desktop app that turns any photo or video into a little pet that lives on your screen — made as a gift, starring Da Niu the hamster." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+  <!-- Fonts: General Sans (free, Fontshare) + Caveat for handwritten notes (free, Google Fonts) -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css?v=20261007r" />
+</head>
+<!-- data-no-pet: Da Niu lives in the cage on this page, so the
+     little hamster that crawls along the bottom of other pages stays away. -->
+<body class="cage-page" data-no-pet>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav__logo">Elaine</a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav__links">
+        <a href="index.html#work">Work</a>
+        <a href="index.html#about">About</a>
+      </nav>
+      <!-- Narration: reads the page aloud (see script.js, section 6) -->
+      <button type="button" class="narrate-btn" aria-pressed="false">
+        <span aria-hidden="true">🔊</span> Narration
+      </button>
+      <!-- Narration speed (shown while Narration is on) -->
+      <label class="narrate-speed" hidden>
+        <span class="narrate-speed__label">Speed</span>
+        <select class="narrate-speed__select">
+          <option value="0.75">0.75×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+          <option value="3">3×</option>
+          <option value="4">4×</option>
+          <option value="6">6×</option>
+          <option value="8">8×</option>
+        </select>
+      </label>
+      <!-- Feed Da Niu: the mouse becomes corn and Da Niu chases it (script.js, section 7) -->
+      <button type="button" class="feed-btn" aria-pressed="false">
+        <span aria-hidden="true">🌽</span> Feed<span class="feed-btn__more"> Da Niu</span>
+      </button>
+      <!-- Language: English / 简体中文 / 繁體中文 for the whole site (i18n.js) -->
+      <label class="lang-pick">
+        <span class="sr-only">Language</span>
+        <span class="lang-pick__globe" aria-hidden="true">🌐</span>
+        <select class="lang-pick__select">
+          <option value="en" lang="en">EN</option>
+          <option value="hans" lang="zh-Hans">简体</option>
+          <option value="hant" lang="zh-Hant">繁體</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===================== 1. PLAY WITH DA NIU =====================
+         The page opens straight into the playable web version of Desk Pet
+         (play/index.html, shown in a frame). The old "look through the
+         cage bars" opening is kept in archive/project-desk-pet-cage-version.html. -->
+    <section class="game-hero tone-light" aria-labelledby="page-title">
+      <div class="game-hero__head">
+        <div>
+          <p class="game-hero__kicker">Personal project · 2026</p>
+          <h1 class="game-hero__title" id="page-title" tabindex="-1">Desk Pet <span lang="zh-Hans">桌宠</span></h1>
+          <p class="game-hero__text">
+            Home of <span lang="zh-Hans">大牛</span> (Da Niu) — a desktop pet, made as a gift
+            for a friend. Play with him right here: click the running wheel, open the cage,
+            poke him, drag him around and feed him corn. Every 5 cobs he runs 2 off on the
+            wheel, and he can only fit 20. (It starts in English; the <span lang="zh-Hans">中文</span> button switches it to Chinese, like the app.)
+          </p>
+        </div>
+        <a class="game-hero__full" href="play/index.html?v=20261007a" target="_blank" rel="noopener">Open full screen ↗</a>
+      </div>
+      <div class="game-hero__frame">
+        <iframe src="play/index.html?v=20261007a"
+                title="Daniu the Hamster — a playable web version of Desk Pet: the running wheel, the cage, poking, dragging and feeding Da Niu corn"></iframe>
+      </div>
+      <a class="game-hero__scroll" href="#layer-1">scroll to burrow ↓</a>
+    </section>
+
+    <!-- Da Niu digging a winding tunnel down the side of the page as you
+         scroll through the bedding (cage.js draws the wiggly path) -->
+    <div class="digger" aria-hidden="true">
+      <svg class="digger__tunnel">
+        <!-- Only the part he has dug so far shows (the clip grows as you scroll) -->
+        <defs><clipPath id="dug-so-far"><rect class="digger__clip" x="-100" y="-20" width="1000" height="0" /></clipPath></defs>
+        <g clip-path="url(#dug-so-far)">
+          <path class="digger__dug" />
+          <path class="digger__crumbs" />
+        </g>
+      </svg>
+      <img class="digger__niu" src="assets/pet/walk.gif" alt="" />
+    </div>
+
+    <!-- ===================== 2–6. THE BEDDING LAYERS ===================== -->
+    <article class="burrow">
+
+      <!-- Layer 1: fluffy white paper bedding -->
+      <section class="layer layer--paper tone-light" id="layer-1">
+        <div class="container layer__inner">
+          <p class="layer__label">Layer 1 · paper bedding</p>
+          <h2 class="layer__title">What it is</h2>
+          <p class="project__meta">Desktop app for Windows &amp; macOS · Electron, HTML, CSS, JavaScript · 2026 · Personal project</p>
+          <div class="project__description">
+            <p>
+              Desk Pet turns any photo or video into a little pet that lives on
+              your desktop. You can drag it around, click it to hear it talk, and
+              leave it to wander along the edge of your screen while you work.
+              You can keep lots of pets, put several on the desktop at once, and
+              pack one into a single <code>.deskpet</code> file to share with a
+              friend.
+            </p>
+            <p>
+              I made Desk Pet as a gift for a friend. The hamster you see here —
+              in the game at the top of this page — is her hamster,
+              <span lang="zh-Hans">大牛</span> (Da Niu), turned into a little
+              digital version that lives on her desktop.
+            </p>
+            <p>
+              My best friend spends most of her day in the lab, far from Da Niu, so I
+              wanted to give her a little stand-in she could keep close while she
+              works. Hamsters don't live very long, either, and I wanted to capture
+              as much of Da Niu as I could, so a small version of him gets to stay
+              around for much longer. We both have ADHD, and we're both prone to
+              wandering away from the computer and missing important emails and
+              notifications. A pet sitting on the desktop is a gentle reason to keep
+              glancing back at the screen. Hamsters are also nocturnal, so during the
+              day the real Da Niu is usually asleep in a ball of bedding. This one is
+              awake and moving around exactly when his owner is. And every time Da
+              Niu wanders across her screen, I hope it reminds her that someone was
+              thinking of her too.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Layer 2: wood shavings -->
+      <section class="layer layer--shavings tone-light" id="layer-2">
+        <div class="container layer__inner">
+          <p class="layer__label">Layer 2 · wood shavings</p>
+          <h2 class="layer__title">Four moods</h2>
+          <p class="project__description">
+            Each pet can have a different look for resting, being clicked, being
+            dragged, crawling and sleeping. These are Da Niu's.
+          </p>
+          <div class="media-row">
+            <figure>
+              <img class="pet-state" src="assets/pet/idle.gif" alt="Cut-out hamster sitting up, glancing left and right" />
+              <figcaption>Resting</figcaption>
+            </figure>
+            <figure>
+              <img class="pet-state" src="assets/pet/held.gif" alt="Hamster with full cheeks being held in a hand" />
+              <figcaption>Picked up</figcaption>
+            </figure>
+            <figure>
+              <img class="pet-state" src="assets/pet/walk.gif" alt="Hamster seen from behind, crawling away" />
+              <figcaption>Crawling</figcaption>
+            </figure>
+            <figure>
+              <img class="pet-state" src="assets/pet/sleep.gif" alt="Hamster sitting still and getting sleepy" />
+              <figcaption>Sleepy</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Layer 3: the tunnels -->
+      <section class="layer layer--tunnel" id="layer-3">
+        <div class="container layer__inner">
+          <p class="layer__label">Layer 3 · the tunnels</p>
+          <h2 class="layer__title">How it works</h2>
+          <div class="project__description">
+            <p>
+              Open the control panel from the tray icon, then press “＋ New” or
+              drop images and videos onto the window — each file becomes a new pet
+              that appears in the corner of the screen straight away. On the right
+              you can change its name, looks, size and the things it says, and
+              every change saves itself and shows up on the desktop within a
+              second.
+            </p>
+            <p>
+              If nobody touches a pet for a while it switches to its sleeping look
+              and stops chatting; one click or drag wakes it up. With wandering
+              turned on, it crawls to a random spot nearby — or always along the
+              screen edges — and turns to face the way it's going.
+            </p>
+            <p>
+              You can also feed it: right-click a pet and choose
+              “🌽 Feed it corn” (or feed every pet at once from the tray menu).
+              The mouse pointer turns into a corn cob and the pet chases it at
+              four times its crawling speed. When it catches the corn it eats it,
+              plays its own “eating” look and says one of its “ate the corn”
+              lines. Press Esc or right-click to put the corn down. (Try it on
+              this site too — the 🌽 Feed button in the menu bar.)
+            </p>
+            <p>
+              It's built with Electron and plain HTML, CSS and JavaScript, with no
+              front-end framework. I didn't write the code by hand: Claude Code
+              wrote all of it, including the desktop app, the corn-cursor feeding
+              and the browser version my friends can open from a link. My part was
+              the idea, the hamster clips and GIFs, the reference photos, the rules
+              for how Da Niu should behave, and testing it on my own desktop until
+              it felt right.
+            </p>
+            <p>
+              My prompts changed a lot along the way. I started with one long
+              written brief that set out everything up front: the files, the
+              settings each pet has, how the windows should behave on Mac and
+              Windows, and a checklist to test against. Once the pet was running, I
+              switched to short requests in Chinese, one feature at a time, like
+              “add a look for when it's being dragged” or “let it crawl around the
+              screen by itself”. I also learned to describe the result exactly.
+              When I asked for crawling that “always stops at the screen edge”, it
+              first crawled along the edges, so I had to explain that it should
+              roam anywhere and only stop at an edge. Later I showed instead of
+              told, and sent photos of a real cage and a clear running wheel. By
+              the end my prompts read like game rules: every five corns Da Niu runs
+              on the wheel and burns off two, he can hold twenty at most, and below
+              twenty, corn beats the wheel.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Layer 4: the nest, right at the bottom -->
+      <section class="layer layer--nest" id="layer-4">
+        <div class="container layer__inner">
+          <p class="layer__label">Layer 4 · the nest</p>
+          <h2 class="layer__title">The real one</h2>
+          <p class="project__description">
+            At the very bottom of the burrow: <span lang="zh-Hans">大牛</span>
+            (Da Niu), my friend's hamster — who the whole gift is for.
+          </p>
+          <!-- Photo carousel (cage.js, section 3). The middle photo is shown
+               in full; the ones either side are clipped shorter. Swipe or
+               scroll sideways, or use the arrows / dots. Without JavaScript
+               it's simply a row you can scroll.
+               Style based on Skiper UI "skiper54" by @gurvinder-singh02 —
+               rebuilt here in plain CSS/JS. To add a photo: copy an <li>. -->
+          <div class="nest-carousel" role="region" aria-roledescription="carousel" aria-label="Photos of Da Niu">
+            <ul class="nest-carousel__track" tabindex="0" aria-label="Photos of Da Niu — scroll sideways">
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-look-up.jpg" alt="Da Niu, a golden-and-white hamster, looking up at the camera from his white bedding" loading="lazy" /></div>
+                <p class="nest-carousel__title">Hello up there</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-hideout-look.jpg" alt="Da Niu sitting in a wooden box full of bedding, looking up" loading="lazy" /></div>
+                <p class="nest-carousel__title">In his wooden hideout</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-hideout.jpg" alt="Da Niu curled up in the corner of the wooden box, eyes half shut" loading="lazy" /></div>
+                <p class="nest-carousel__title">Dozing in the hideout</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame">
+                  <video src="assets/desk-pet/niu-treat.mp4" poster="assets/desk-pet/niu-treat-poster.jpg" controls muted playsinline preload="none"
+                         aria-label="Video, 26 seconds, no sound: a hand passes Da Niu a treat through the cage; he takes it, then eats from his fish-shaped bowl"></video>
+                </div>
+                <p class="nest-carousel__title">Treat time (video)</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-fish-bowl.jpg" alt="Da Niu curled up asleep inside his dark blue fish-shaped food bowl" loading="lazy" /></div>
+                <p class="nest-carousel__title">Asleep in the food bowl</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-nap.jpg" alt="Da Niu asleep in the bedding beside the wooden box" loading="lazy" /></div>
+                <p class="nest-carousel__title">Nap by the box</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-peek-2.jpg" alt="Da Niu peeking out over the bedding inside a yellow plastic house" loading="lazy" /></div>
+                <p class="nest-carousel__title">Peekaboo</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-peek-3.jpg" alt="Da Niu's face peeking out of the yellow house, bedding piled in front" loading="lazy" /></div>
+                <p class="nest-carousel__title">Still peeking</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-peek-1.jpg" alt="Da Niu far back in the yellow house, half hidden behind bedding" loading="lazy" /></div>
+                <p class="nest-carousel__title">Hiding at the back</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/niu-yawn.jpg" alt="Close-up of Da Niu with his mouth wide open behind a wooden ramp" loading="lazy" /></div>
+                <p class="nest-carousel__title">Big yawn</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/photo-sleeping.jpg" alt="The hamster curled up asleep in white bedding" loading="lazy" /></div>
+                <p class="nest-carousel__title">Curled up</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/photo-everyday.jpg" alt="The golden hamster held up in one hand, looking at the camera" loading="lazy" /></div>
+                <p class="nest-carousel__title">In a hand</p>
+              </li>
+              <li class="nest-carousel__slide">
+                <div class="nest-carousel__frame"><img src="assets/desk-pet/photo-back.jpg" alt="The hamster seen from above, standing on top of its cage" loading="lazy" /></div>
+                <p class="nest-carousel__title">On top of the cage</p>
+              </li>
+            </ul>
+            <div class="nest-carousel__nav" hidden>
+              <button type="button" class="nest-carousel__btn" data-step="-1" aria-label="Previous photo">←</button>
+              <div class="nest-carousel__dots"></div>
+              <p class="nest-carousel__count" aria-live="polite"></p>
+              <button type="button" class="nest-carousel__btn" data-step="1" aria-label="Next photo">→</button>
+            </div>
+            <p class="nest-carousel__credit">Carousel style based on <a href="https://skiper-ui.com" target="_blank" rel="noopener">Skiper UI</a> (skiper54)</p>
+          </div>
+          <a class="project__back layer__back" href="index.html#work">← Back to my work</a>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Elaine</p>
+      <button type="button" id="motion-toggle" class="pet-toggle">Pause animations</button>
+    </div>
+  </footer>
+
+  <script src="i18n.js?v=20261007r"></script>
+
+  <script src="script.js?v=20261007r"></script>
+  <script src="pet.js?v=20261007r"></script>
+  <script src="cage.js?v=20261007r"></script>
+</body>
+</html>
