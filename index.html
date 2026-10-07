@@ -42,7 +42,7 @@
   <!-- The "?v=…" after a file name is a version tag: when the file changes,
        changing this tag makes every browser fetch the new copy instead of
        an old saved one. -->
-  <link rel="stylesheet" href="styles.css?v=20261007r" />
+  <link rel="stylesheet" href="styles.css?v=20261008b" />
 </head>
 <body class="home">
 
@@ -81,6 +81,10 @@
           <option value="8">8×</option>
         </select>
       </label>
+      <!-- Accessibility: one click stops every animation and reads the page aloud (script.js, section 8) -->
+      <button type="button" class="access-btn" aria-pressed="false" data-cursor="♿ Turn on">
+        <span aria-hidden="true">♿</span><span class="access-btn__more"> Accessibility</span>
+      </button>
       <!-- Feed Da Niu: the mouse becomes corn and Da Niu chases it (script.js, section 7) -->
       <button type="button" class="feed-btn" aria-pressed="false">
         <span aria-hidden="true">🌽</span> Feed<span class="feed-btn__more"> Da Niu</span>
@@ -501,9 +505,9 @@
 
   <!-- Matter.js: a free physics library, used for the falling skill capsules -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js" defer></script>
-  <script src="i18n.js?v=20261007r"></script>
-  <script src="script.js?v=20261007r"></script>
-  <script src="pet.js?v=20261007r"></script>
-  <script src="home.js?v=20261007r" defer></script>
+  <script src="i18n.js?v=20261008b"></script>
+  <script src="script.js?v=20261008b"></script>
+  <script src="pet.js?v=20261008b"></script>
+  <script src="home.js?v=20261008b" defer></script>
 </body>
 </html>

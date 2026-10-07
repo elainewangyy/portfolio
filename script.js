@@ -435,22 +435,23 @@ if (feedButton) {
 }
 
 /* -------------------------------------------------------------
-   8. ACCESSIBILITY ICON  (on the home page's desktop)
+   8. ACCESSIBILITY  ("♿ Accessibility" in every menu bar, and the
+   icon on the home page's desktop — they're the same switch)
    One click: every animation stops (the same as "Pause
    animations") and Narration switches on and starts reading the
    page aloud from the top. Click again to turn both back off.
    Both choices are remembered on the other pages too.
    ------------------------------------------------------------- */
-const easyButton = document.querySelector(".easy-mode");
+const easyButtons = [...document.querySelectorAll(".easy-mode, .access-btn")];
 
-if (easyButton) {
+if (easyButtons.length) {
   const narrator = window.narrator; // missing if this browser can't speak
   const isOn = () =>
     document.body.classList.contains("motion-paused") && (!narrator || narrator.isOn());
-  const show = () => easyButton.setAttribute("aria-pressed", String(isOn()));
+  const show = () => easyButtons.forEach((b) => b.setAttribute("aria-pressed", String(isOn())));
   show();
 
-  easyButton.addEventListener("click", () => {
+  easyButtons.forEach((b) => b.addEventListener("click", () => {
     const on = !isOn();
     if (window.corn && window.corn.on && feedButton) feedButton.click(); // put the corn away too
     setMotionPaused(on);
@@ -466,7 +467,7 @@ if (easyButton) {
       }
     }
     show();
-  });
+  }));
 
   // Keep the icon right if Narration or Pause animations are changed on their own.
   document.addEventListener("motionchange", show);

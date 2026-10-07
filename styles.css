@@ -261,6 +261,7 @@ body.home .nav__links {
 /* The "🔊 Narration" and "🌽 Feed Da Niu" buttons in the menu bar
    (every page). Orange when switched on. */
 .narrate-btn,
+.access-btn,
 .feed-btn {
   font: inherit;
   font-size: 0.85rem;
@@ -276,11 +277,13 @@ body.home .nav__links {
 }
 
 .narrate-btn:hover,
+.access-btn:hover,
 .feed-btn:hover {
   border-color: var(--color-accent);
 }
 
 .narrate-btn[aria-pressed="true"],
+.access-btn[aria-pressed="true"],
 .feed-btn[aria-pressed="true"] {
   background: var(--color-accent);
   border-color: var(--color-accent);
@@ -2978,12 +2981,33 @@ body.pet-hidden {
   }
 
   .narrate-speed,
+  .access-btn,
   .feed-btn {
     order: 2;
   }
 
-  /* "🌽 Feed" on a phone; "Da Niu" is still there for screen readers. */
-  .feed-btn__more {
+  /* Phone: the three menu-bar buttons show just their icons (🔊 ♿ 🌽).
+     The words are still inside each button (font-size 0 hides them
+     visually only), so screen readers still hear "Narration" etc. */
+  .narrate-btn,
+  .access-btn,
+  .feed-btn {
+    font-size: 0;
+    padding-inline: 0.6rem;
+  }
+
+  .narrate-btn > [aria-hidden="true"],
+  .access-btn > [aria-hidden="true"],
+  .feed-btn > [aria-hidden="true"] {
+    font-size: 1rem;
+  }
+
+  .lang-pick__globe {
+    display: none;
+  }
+
+  .feed-btn__more,
+  .access-btn__more {
     position: absolute;
     width: 1px;
     height: 1px;

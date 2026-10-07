@@ -33,6 +33,7 @@
     "Language": ["语言", "語言"],
     "<span aria-hidden=\"true\">🔊</span> Narration": ["<span aria-hidden=\"true\">🔊</span> 旁白", "<span aria-hidden=\"true\">🔊</span> 旁白"],
     "Speed": ["语速", "語速"],
+    "<span aria-hidden=\"true\">♿</span><span class=\"access-btn__more\"> Accessibility</span>": ["<span aria-hidden=\"true\">♿</span><span class=\"access-btn__more\"> 无障碍</span>", "<span aria-hidden=\"true\">♿</span><span class=\"access-btn__more\"> 無障礙</span>"],
     "<span aria-hidden=\"true\">🌽</span> Feed<span class=\"feed-btn__more\"> Da Niu</span>": ["<span aria-hidden=\"true\">🌽</span> 喂<span class=\"feed-btn__more\">大牛</span>", "<span aria-hidden=\"true\">🌽</span> 餵<span class=\"feed-btn__more\">大牛</span>"],
     "Hide the hamster": ["藏起仓鼠", "藏起倉鼠"],
     "Bring the hamster back": ["把仓鼠叫回来", "把倉鼠叫回來"],
